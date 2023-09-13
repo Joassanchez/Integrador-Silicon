@@ -1,0 +1,13 @@
+{
+    "database": {
+        "host": "localhost",
+        "user": "root",
+        "password": "2712",
+        "database": "icecreamcopos"
+    },
+    
+    "server": {
+        "port": 8080
+    }
+
+}
