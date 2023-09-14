@@ -1,9 +1,12 @@
 import './App.css';
-import
+import { Login } from './Componentes/Login/Login';
+
 
 function App() {
   return (
-    <Login/>
+    <div classname ="App">
+    <h1><Login/></h1>
+    </div>
   );
-}
-ReactDOM.render(<App />, document.getElementById('root'))
+};
+ export default App;
