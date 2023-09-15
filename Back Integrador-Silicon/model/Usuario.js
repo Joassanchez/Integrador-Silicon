@@ -69,7 +69,7 @@ usuario_db.update = function (datos_usuario, id_usuario, funcallback) {
         if (err) {
             if (err.code === "ER_TRUNCATED_WRONG_VALUE") { 
                 funcallback({
-                    message: `El id de usuario es incorrecto, se espera un número entero`,
+                    message: `El id de usuario es incorrecto`,
                     detail: err
                 });
             } else {
@@ -81,12 +81,12 @@ usuario_db.update = function (datos_usuario, id_usuario, funcallback) {
         } else {
             if (result.affectedRows === 0) { 
                 funcallback({
-                    message: "No existe un usuario que coincida con el criterio de búsqueda",
+                    message: "No existe el usuario que coincida con el criterio de búsqueda",
                     detail: result
                 });
             } else {
                 funcallback(null, {
-                    message: `Se actualizaron los datos del usuario ${id_usuario}`, 
+                    message: `Se actualizaron los datos del Usuario con ID ${id_usuario}`, 
                     detail: result
                 });
             }
