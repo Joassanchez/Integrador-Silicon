@@ -17,7 +17,7 @@ export class Menu extends Component {
                   <Link to="/Empleados" className='nav-link'> Empleados</Link>
                 </li>
                 <li className="nav-item">
-                  <Link to="/Empleados_Edit" className='nav-link'> Empleados_Edit</Link>
+                  <Link to="/Empleados_edit" className='nav-link'> Empleados_Edit</Link>
                 </li>
 
                 <li className="nav-item">
