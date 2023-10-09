@@ -1,23 +1,139 @@
-import React, { Component } from 'react'
+import React, { Component } from 'react';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import { useParams, useNavigate } from 'react-router-dom';
 
-export class Login extends Component {
+class Login extends Component {
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            nickname: '',
+            password: '',
+        };
+    }
+
+    handleSubmit = (event) => {
+        event.preventDefault();
+
+        
+        let usuario = {
+            nickname: this.state.nickname,
+            password: this.state.password,
+        };
+
+        const parametros = {
+            method: 'POST',
+            body: JSON.stringify(usuario),
+            headers: {
+                'Content-Type': 'application/json',
+                
+            }
+
+
+        }
+
+        fetch('http://localhost:8080/security/login', parametros)
+            .then((res) => res.json())
+            .then((result) => {
+                if (result.ok) {
+                    toast.success('Bienvenido', {
+                        position: 'bottom-center',
+                        autoClose: 5000,
+                        hideProgressBar: false,
+                        closeOnClick: true,
+                        pauseOnHover: true,
+                        draggable: true,
+                        progress: undefined,
+                        theme: 'light',
+                    });
+
+                    this.props.navigate('/Empleados');
+                } else {
+                    toast.error(result.body.message, {
+                        position: 'bottom-center',
+                        autoClose: 5000,
+                        hideProgressBar: false,
+                        closeOnClick: true,
+                        pauseOnHover: true,
+                        draggable: true,
+                        progress: undefined,
+                        theme: 'light',
+                    });
+                }
+            })
+            .catch((error) => {
+                toast.error(error.message, {
+                    position: 'bottom-center',
+                    autoClose: 5000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: 'light',
+                });
+            });
+    };
+
+    handleChange = (event) => {
+        this.setState({ [event.target.name]: event.target.value });
+    };
+
     render() {
         return (
-            <>
-                <div class="mb-3">
-                    <label for="exampleFormControlInput1" class="form-label">Email address</label>
-                    <input type="email" class="form-control" id="exampleFormControlInput1" placeholder="name@example.com" />
+            <div className="container">
+                <div className="row">
+                    <div className="col">
+                        <h1>Iniciar Sesión</h1>
+                    </div>
                 </div>
-                <div class="mb-3">
-                    <label for="inputPassword5" class="form-label">Password</label>
-                    <input type="password" id="inputPassword5" class="form-control" aria-describedby="passwordHelpBlock"/>
-                        <div id="passwordHelpBlock" class="form-text">
-                            Your password must be 8-20 characters long, contain letters and numbers, and must not contain spaces, special characters, or emoji.
-                        </div>
+
+                <div className="row">
+                    <div className="col">
+                        <form onSubmit={this.handleSubmit}>
+                            <div className="form-floating">
+                                <input
+                                    type="text"
+                                    className="form-control"
+                                    id="nickname"
+                                    onChange={this.handleChange}
+                                    value={this.state.nickname}
+                                    name="nickname"
+                                />
+                                <label htmlFor="nickname">Usuario</label>
+                            </div>
+                            <br />
+
+                            <div className="form-floating">
+                                <input
+                                    type="password"
+                                    className="form-control"
+                                    id="password"
+                                    onChange={this.handleChange}
+                                    value={this.state.password}
+                                    name="password"
+                                />
+                                <label htmlFor="password">Contraseña</label>
+                            </div>
+                            <br />
+
+                            <input className="btn btn-primary" type="submit" value="Ingresar" />
+                        </form>
+                    </div>
                 </div>
-            </>
-        )
+            </div>
+        );
     }
 }
 
-export default Login
+export default function LoginWrapper() {
+    const p = useParams();
+    const navigate = useNavigate();
+
+    return (
+        <>
+            <Login navigate={navigate} params={p} />
+        </>
+    );
+}
