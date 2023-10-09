@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
-//import { useParams, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+import jwt_decode from 'jwt-decode';
 
-class Empleados_Edit extends Component {
+export class Internal_Empleados_Edit extends Component {
   constructor(props) {
     super(props);
 
@@ -12,6 +13,7 @@ class Empleados_Edit extends Component {
       id_rol: '1'
     };
   }
+
 
   handleSubmit = (event) => {
     event.preventDefault();
@@ -31,25 +33,26 @@ class Empleados_Edit extends Component {
     }
 
     fetch('http://localhost:8080/usuario/', Parametros)
-    .then((res) => {
-      return res.json().then((body) => ({
-        status: res.status,
-        ok: res.ok,
-        headers: res.headers,
-        body: body,
-      }));
-    })
-    .then((result) => {
-      if (result.ok) {
-        alert('Éxito');
-      } else {
-        alert(result.body.message);
-      }
-    })
-    .catch((error) => {
-      alert(error.message);
-    });
-};
+      .then((res) => {
+        return res.json().then((body) => ({
+          status: res.status,
+          ok: res.ok,
+          headers: res.headers,
+          body: body,
+        }));
+      })
+      .then((result) => {
+        if (result.ok) {
+          alert('Éxito');
+        } else {
+          alert(result.body.message);
+        }
+      })
+      .catch((error) => {
+        alert(error.message);
+      });
+    this.props.navigate('/Empleados');
+  };
 
 
   handleChange = (event) => {
@@ -127,4 +130,14 @@ class Empleados_Edit extends Component {
   }
 }
 
-export default Empleados_Edit;
+export default Empleados_Edit
+
+export function Empleados_Edit() {
+  const navigate = useNavigate();
+
+  return (
+    <>
+      <Internal_Empleados_Edit navigate={navigate} />
+    </>
+  );
+}

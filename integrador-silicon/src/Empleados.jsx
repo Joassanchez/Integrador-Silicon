@@ -1,6 +1,9 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
+import jwt_decode from 'jwt-decode';
+
+
 
 export class Empleados extends Component {
   constructor(props) {
@@ -22,6 +25,7 @@ export class Empleados extends Component {
       .then(res => {
         return res.json()
           .then(body => {
+            console.log('Response from API:', body); 
             return {
               status: res.status,
               ok: res.ok,
@@ -34,7 +38,6 @@ export class Empleados extends Component {
           if (result.ok) {
             this.setState({
               Empleados: result.body,
-
             });
           } else {
             toast.error(result.body.message, {
@@ -53,6 +56,7 @@ export class Empleados extends Component {
         (error) => { console.log(error) }
       );
   }
+
   render() {
     const filas = this.state.Empleados.map((Empleado, index) => {
       return (
@@ -60,7 +64,7 @@ export class Empleados extends Component {
           <td>{Empleado.nickname}</td>
           <td>{Empleado.password}</td>
           <td>{Empleado.email}</td>
-          <td>{Empleado.id_rol}</td>
+          <td>{Empleado.nombreROL}</td>
         </tr>
       );
     });
@@ -74,7 +78,7 @@ export class Empleados extends Component {
           <thead>
             <tr>
               <th scope="col">Nickname</th>
-              <th scope="col">contraseña</th>
+              <th scope="col">Contraseña</th>
               <th scope="col">Email</th>
               <th scope="col">Rol</th>
             </tr>
