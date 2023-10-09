@@ -31,38 +31,25 @@ class Empleados_Edit extends Component {
     }
 
     fetch('http://localhost:8080/usuario/', Parametros)
-      .then(res => {
-        try {
-          res.json()
-            .then(
-              body => (
-                {
-                  status: res.status,
-                  ok: res.ok,
-                  headers: res.headers,
-                  body: body
-
-                }
-              )
-            );
-        } catch (err) {
-          console.log(err)
-        }
-
-      })
-      .then(
-        (result) => {
-          if (result.ok) {
-            alert("exito");
-          } else {
-            alert(result.body.message)
-          }
-        })
-      .catch((error) => {
-        alert(error.message)
-      });
-    //navigate('/Empleados');
-  }
+    .then((res) => {
+      return res.json().then((body) => ({
+        status: res.status,
+        ok: res.ok,
+        headers: res.headers,
+        body: body,
+      }));
+    })
+    .then((result) => {
+      if (result.ok) {
+        alert('Éxito');
+      } else {
+        alert(result.body.message);
+      }
+    })
+    .catch((error) => {
+      alert(error.message);
+    });
+};
 
 
   handleChange = (event) => {
@@ -83,8 +70,8 @@ class Empleados_Edit extends Component {
                 value={this.state.id_rol}
                 name="id_rol"
               >
-                <option value="1">Administrador</option>
-                <option value="2">Empleado</option>
+                <option value='1'>Administrador</option>
+                <option value='2'>Empleado</option>
               </select>
               <br />
               <div className="form-floating">

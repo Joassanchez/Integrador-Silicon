@@ -18,7 +18,7 @@ export class Empleados extends Component {
         'Authorization': sessionStorage.getItem('token')
       }
     };
-    fetch('http://localhost:8080/usuario', parametros)
+    fetch('http://localhost:8080/usuario/', parametros)
       .then(res => {
         return res.json()
           .then(body => {
