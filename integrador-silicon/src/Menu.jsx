@@ -5,7 +5,7 @@ function Menu() {
   const navigate = useNavigate();
 
   const handleLogout = () => {
-    // Agrega aquí la lógica para cerrar la sesión (eliminar el token, etc.)
+    sessionStorage.removeItem('token');
     navigate('/');
   };
 

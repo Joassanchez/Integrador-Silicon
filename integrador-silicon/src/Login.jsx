@@ -16,52 +16,66 @@ class Login extends Component {
     handleSubmit = (event) => {
         event.preventDefault();
 
-        
+
         let usuario = {
             nickname: this.state.nickname,
             password: this.state.password,
         };
 
-        const parametros = {
+        let parametros = {
             method: 'POST',
             body: JSON.stringify(usuario),
             headers: {
                 'Content-Type': 'application/json',
-                
+
             }
 
 
         }
 
         fetch('http://localhost:8080/security/login', parametros)
-            .then((res) => res.json())
-            .then((result) => {
-                if (result.ok) {
-                    toast.success('Bienvenido', {
-                        position: 'bottom-center',
-                        autoClose: 5000,
-                        hideProgressBar: false,
-                        closeOnClick: true,
-                        pauseOnHover: true,
-                        draggable: true,
-                        progress: undefined,
-                        theme: 'light',
-                    });
+            .then(res => {
+                return res.json()
+                    .then(body => {
+                        return {
+                            status: res.status,
+                            ok: res.ok,
+                            headers: res.headers,
+                            body: body
 
-                    this.props.navigate('/Empleados');
-                } else {
-                    toast.error(result.body.message, {
-                        position: 'bottom-center',
-                        autoClose: 5000,
-                        hideProgressBar: false,
-                        closeOnClick: true,
-                        pauseOnHover: true,
-                        draggable: true,
-                        progress: undefined,
-                        theme: 'light',
-                    });
-                }
-            })
+                        };
+                    })
+
+
+            }).then(
+                result => {
+                    if (result.ok) {
+                        sessionStorage.setItem('token', result.body.token);
+                        toast.success('Bienvenido', {
+                            position: 'bottom-center',
+                            autoClose: 5000,
+                            hideProgressBar: false,
+                            closeOnClick: true,
+                            pauseOnHover: true,
+                            draggable: true,
+                            progress: undefined,
+                            theme: 'light',
+                        });
+
+                        this.props.navigate('/Empleados');
+                    } else {
+                        toast.error(result.body.message, {
+                            position: 'bottom-center',
+                            autoClose: 5000,
+                            hideProgressBar: false,
+                            closeOnClick: true,
+                            pauseOnHover: true,
+                            draggable: true,
+                            progress: undefined,
+                            theme: 'light',
+                        });
+                    }
+                })
             .catch((error) => {
                 toast.error(error.message, {
                     position: 'bottom-center',

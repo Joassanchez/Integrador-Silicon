@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+//import { useParams, useNavigate } from 'react-router-dom';
 
 class Empleados_Edit extends Component {
   constructor(props) {
@@ -12,38 +13,59 @@ class Empleados_Edit extends Component {
     };
   }
 
-  handleSubmit = event => {
+  handleSubmit = (event) => {
     event.preventDefault();
-
-    const { nickname, password, email, id_rol } = this.state;
-
     let Usuario = {
-      nickname,
-      password,
-      email,
-      id_rol
-    };
+      nickname: this.state.nickname,
+      password: this.state.password,
+      email: this.state.email,
+      id_rol: this.state.id_rol
+    }
 
     let Parametros = {
-      method: 'post',
+      method: 'POST',
       body: JSON.stringify(Usuario),
       headers: {
         'Content-Type': 'application/json'
       }
-    };
+    }
 
     fetch('http://localhost:8080/usuario/', Parametros)
-      .then(res => res.json())
-      .then(result => {
-        alert(result.message);
-      })
-      .catch(error => {
-        console.error(error);
-        alert('Hubo un error en la solicitud.');
-      });
-  };
+      .then(res => {
+        try {
+          res.json()
+            .then(
+              body => (
+                {
+                  status: res.status,
+                  ok: res.ok,
+                  headers: res.headers,
+                  body: body
 
-  handleChange = event => {
+                }
+              )
+            );
+        } catch (err) {
+          console.log(err)
+        }
+
+      })
+      .then(
+        (result) => {
+          if (result.ok) {
+            alert("exito");
+          } else {
+            alert(result.body.message)
+          }
+        })
+      .catch((error) => {
+        alert(error.message)
+      });
+    //navigate('/Empleados');
+  }
+
+
+  handleChange = (event) => {
     this.setState({ [event.target.name]: event.target.value });
   };
 
@@ -114,7 +136,7 @@ class Empleados_Edit extends Component {
           </div>
         </div>
       </div>
-    );
+    )
   }
 }
 
