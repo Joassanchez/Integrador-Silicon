@@ -422,10 +422,10 @@ export class Registros extends Component {
 
         return (
             <>
+                <div className="container">
                 <br></br>
                 <h1 className=""><strong>  Registro de Ventas</strong></h1>
                 <br></br>
-                <div className="container">
                     <span>{"   "}</span>
                     <div className="accordion" id="accordionExample">
                         {this.state.ventas.map((venta, index) => (
