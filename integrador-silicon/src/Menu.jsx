@@ -38,7 +38,7 @@ function Menu() {
                                     <Link to="/Empleados" className='nav-link'> Empleados</Link>
                                 </li>
                                 <li className="nav-item">
-                                    <Link to="/Ventas" className='nav-link'> Registro Ventas</Link>
+                                    <Link to="/Registros" className='nav-link'> Registro Ventas</Link>
                                 </li>
                                 <li className="nav-item">
                                     <Link to="/pedido" className='nav-link'> Pedido</Link>

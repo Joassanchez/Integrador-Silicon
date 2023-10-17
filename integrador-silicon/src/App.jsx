@@ -21,7 +21,7 @@ function App() {
         <Route path="/Empleados/Edit" element={<Empleados_Edit />} />
         <Route path="/Empleados/Edit/:id_usuario" element={<Empleados_Edit />} />
         <Route path='/pedido' element={<Pedidos/>} />
-        <Route path="/Venta" element={<Registros/>} />
+        <Route path="/Registros" element={<Registros/>} />
         <Route path="/login" element={<Navigate to="/" />} />
       </Routes>
     </>
