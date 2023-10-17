@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
-import { useNavigate } from 'react-router-dom';
-import jwt_decode from 'jwt-decode';
+import { useNavigate, useParams } from 'react-router-dom';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
-export class Internal_Empleados_Edit extends Component {
+export class Internal_Vehiculos_Edit extends Component {
   constructor(props) {
     super(props);
 
@@ -10,58 +11,147 @@ export class Internal_Empleados_Edit extends Component {
       nickname: '',
       password: '',
       email: '',
-      id_rol: '1'
+      id_rol: '1',
+      // showPwd: false, 
     };
   }
 
+  componentDidMount() {
+    if (this.props.params.id_usuario) {
+      let parametros = {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'authorization': sessionStorage.getItem('token'),
+        },
+      };
+      fetch(`http://localhost:8080/usuario/${this.props.params.id_usuario}`, parametros)
+        .then((res) => {
+          return res.json().then((body) => {
+            return {
+              status: res.status,
+              ok: res.ok,
+              headers: res.headers,
+              body: body,
+            };
+          });
+        })
+        .then(
+          (result) => {
+            if (result.ok) {
+              this.setState({
+                nickname: result.body.detail.nickname,
+                password: result.body.detail.password,
+                email: result.body.detail.email,
+                id_rol: result.body.detail.id_rol,
+              });
+            } else {
+              toast.error(result.body.message, {
+                position: 'bottom-center',
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: 'light',
+              });
+            }
+          }
+        )
+        .catch((error) => {
+          console.log(error);
+        });
+    }
+  }
 
   handleSubmit = (event) => {
     event.preventDefault();
+
     let Usuario = {
       nickname: this.state.nickname,
       password: this.state.password,
       email: this.state.email,
-      id_rol: this.state.id_rol
-    }
+      id_rol: this.state.id_rol,
+    };
 
     let Parametros = {
-      method: 'POST',
+      method: this.props.params.id_usuario ? 'PUT' : 'POST',
       body: JSON.stringify(Usuario),
       headers: {
-        'Content-Type': 'application/json'
-      }
-    }
+        'Content-Type': 'application/json',
+      },
+    };
 
-    fetch('http://localhost:8080/usuario/', Parametros)
+    const url = this.props.params.id_usuario
+      ? `http://localhost:8080/usuario/${this.props.params.id_usuario}`
+      : 'http://localhost:8080/usuario/';
+    fetch(url, Parametros)
       .then((res) => {
-        return res.json().then((body) => ({
-          status: res.status,
-          ok: res.ok,
-          headers: res.headers,
-          body: body,
-        }));
+        return res.json().then((body) => {
+          return {
+            status: res.status,
+            ok: res.ok,
+            headers: res.headers,
+            body: body,
+          };
+        });
       })
-      .then((result) => {
-        if (result.ok) {
-          alert('Éxito');
-        } else {
-          alert(result.body.message);
+      .then(
+        (result) => {
+          if (result.ok) {
+            toast.success(result.body.message, {
+              position: 'bottom-center',
+              autoClose: 5000,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+              progress: undefined,
+              theme: 'light',
+            });
+            this.props.navigate('/Empleados');
+          } else {
+            toast.error(result.body.message, {
+              position: 'bottom-center',
+              autoClose: 5000,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+              progress: undefined,
+              theme: 'light',
+            });
+          }
         }
-      })
+      )
       .catch((error) => {
-        alert(error.message);
+        console.log(error);
       });
-    this.props.navigate('/Empleados');
   };
-
 
   handleChange = (event) => {
     this.setState({ [event.target.name]: event.target.value });
   };
 
+  // toggleShowPassword = () => {
+  //   this.setState((prevState) => ({ showPwd: !prevState.showPwd }));
+  // };
+
   render() {
     return (
       <div className="container">
+        <div className="row">
+          <div className="col">
+            <h1>
+              {this.props.params.id_usuario
+                ? `Edicion del usuario ${this.props.params.id_usuario}`
+                : 'Nuevo usuario'}
+            </h1>
+          </div>
+        </div>
+
         <div className="row">
           <div className="col">
             <form onSubmit={this.handleSubmit}>
@@ -73,8 +163,8 @@ export class Internal_Empleados_Edit extends Component {
                 value={this.state.id_rol}
                 name="id_rol"
               >
-                <option value='1'>Administrador</option>
-                <option value='2'>Empleado</option>
+                <option value="1">Administrador</option>
+                <option value="2">Empleado</option>
               </select>
               <br />
               <div className="form-floating">
@@ -92,7 +182,7 @@ export class Internal_Empleados_Edit extends Component {
               <br />
               <div className="form-floating">
                 <input
-                  type="password"
+                  type={this.state.showPwd ? "text" : "password"}
                   className="form-control"
                   id="floatingPassword"
                   placeholder="Password"
@@ -106,6 +196,22 @@ export class Internal_Empleados_Edit extends Component {
                   title="Debe contener al menos un número y una letra mayúscula y minúscula, y tener al menos 8 caracteres o más."
                 />
                 <label htmlFor="floatingPassword">Password</label>
+                {/* <div className="position-absolute pointer pwd-icon" onClick={this.toggleShowPassword}>
+                  {this.state.showPwd ? (
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" height={"1.5rem"}>
+                      {<span class="material-icons">
+                        visibility
+                      </span>
+                      }
+                    </svg>
+                  ) : (
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" height={"1.5rem"}>
+                      {<span class="material-icons">
+                        visibility_off
+                      </span>}
+                    </svg>
+                  )}
+                </div> */}
               </div>
               <br />
               <div className="form-floating">
@@ -126,18 +232,25 @@ export class Internal_Empleados_Edit extends Component {
           </div>
         </div>
       </div>
-    )
+    );
   }
 }
 
-export default Empleados_Edit
 
-export function Empleados_Edit() {
+
+
+export default Vehiculos_Edit
+
+
+
+export function Vehiculos_Edit() {
+  const p = useParams();
+
   const navigate = useNavigate();
 
   return (
     <>
-      <Internal_Empleados_Edit navigate={navigate} />
+      <Internal_Vehiculos_Edit navigate={navigate} params={p} />
     </>
   );
 }

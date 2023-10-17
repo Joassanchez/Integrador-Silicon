@@ -4,16 +4,24 @@ import Menu from './Menu';
 import Empleados from './Empleados';
 import Empleados_Edit from './Empleados_Edit';
 import LoginWrapper from './Login';
+import Pedidos from './Pedidos';
+import Registros from './Registros';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 function App() {
   return (
     <>
 
       <Menu />
+      <ToastContainer/>
       <Routes>
         <Route path="/" element={<LoginWrapper />} />
-        <Route path="/Empleados/*" element={<Empleados />} />
-        <Route path="/Empleados_Edit" element={<Empleados_Edit />} />
+        <Route path="/Empleados" element={<Empleados />} />
+        <Route path="/Empleados/Edit" element={<Empleados_Edit />} />
+        <Route path="/Empleados/Edit/:id_usuario" element={<Empleados_Edit />} />
+        <Route path='/pedido' element={<Pedidos/>} />
+        <Route path="/Venta" element={<Registros/>} />
         <Route path="/login" element={<Navigate to="/" />} />
       </Routes>
     </>

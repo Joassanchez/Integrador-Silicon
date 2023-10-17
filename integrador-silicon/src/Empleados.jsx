@@ -1,31 +1,42 @@
-import React, { Component } from 'react';
+import React, { Component } from 'react'
 import { Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import jwt_decode from 'jwt-decode';
-
+import Button from 'react-bootstrap/Button';
+import Modal from 'react-bootstrap/Modal';
+import jwt_decode from "jwt-decode";
+import { TrashFill, Pencil } from 'react-bootstrap-icons';
 
 
 export class Empleados extends Component {
   constructor(props) {
-    super(props);
+    super(props)
+
     this.state = {
-      Empleados: []
-    };
+      Empleados: [],
+      modal: false
+    }
+    this.handleClickDelete = this.handleClickDelete.bind(this)
+    this.closeModal = this.closeModal.bind(this)
+    this.showModal = this.showModal.bind(this)
   }
 
+
   componentDidMount() {
+
     let parametros = {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': sessionStorage.getItem('token')
+        'authorization': sessionStorage.getItem('token')
       }
-    };
-    fetch('http://localhost:8080/usuario/', parametros)
+    }
+
+
+
+    fetch("http://localhost:8080/usuario", parametros)
       .then(res => {
         return res.json()
           .then(body => {
-            console.log('Response from API:', body); 
             return {
               status: res.status,
               ok: res.ok,
@@ -34,10 +45,13 @@ export class Empleados extends Component {
             };
           })
       }).then(
+
         result => {
           if (result.ok) {
             this.setState({
               Empleados: result.body,
+
+              modal: false
             });
           } else {
             toast.error(result.body.message, {
@@ -57,7 +71,82 @@ export class Empleados extends Component {
       );
   }
 
+  closeModal() {
+    this.setState({
+      modal: false,
+      idToDelete: null
+    })
+  }
+
+  showModal(id_usuario) {
+
+    this.setState({
+      modal: true,
+      idToDelete: id_usuario
+    })
+  }
+
+
+  handleClickDelete() {
+    let parametros = {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+      }
+    }
+
+    const url = `http://localhost:8080/usuario/${this.state.idToDelete}`
+    fetch(url, parametros)
+      .then(res => {
+        return res.json()
+          .then(body => {
+            return {
+              status: res.status,
+              ok: res.ok,
+              headers: res.headers,
+              body: body
+            };
+          })
+      }).then(
+        result => {
+          if (result.ok) {
+            toast.success(result.body.message, {
+              position: "bottom-center",
+              autoClose: 5000,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+              progress: undefined,
+              theme: "light",
+            });
+            this.closeModal();
+            this.componentDidMount();
+          } else {
+            toast.error(result.body.message, {
+              position: "bottom-center",
+              autoClose: 5000,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+              progress: undefined,
+              theme: "light",
+            });
+          }
+        }
+      ).catch(
+        (error) => { console.log(error) }
+      );
+  }
+
+
+
   render() {
+
+    var tokenDecoded = jwt_decode(sessionStorage.getItem('token'));
+    const rol = tokenDecoded.rol;
     const filas = this.state.Empleados.map((Empleado, index) => {
       return (
         <tr key={index}>
@@ -65,29 +154,67 @@ export class Empleados extends Component {
           <td>{Empleado.password}</td>
           <td>{Empleado.email}</td>
           <td>{Empleado.nombreROL}</td>
-        </tr>
-      );
-    });
+          <td>
+            <Link to={`/Empleados/Edit/${Empleado.id_usuario}`} className='btn btn-primary'>
+              <Pencil />
+            </Link>
 
+
+            <button className='btn btn-danger' onClick={() => this.showModal(Empleado.id_usuario)}>
+              <TrashFill />
+            </button>
+
+          </td>
+        </tr>
+      )
+
+    });
     return (
       <>
-        <Link to="/Empleados_Edit">
-          <button className="btn btn-primary">Nuevo</button>
-        </Link>
-        <table className="table table-hover">
-          <thead>
-            <tr>
-              <th scope="col">Nickname</th>
-              <th scope="col">Contraseña</th>
-              <th scope="col">Email</th>
-              <th scope="col">Rol</th>
-            </tr>
-          </thead>
-          <tbody>{filas}</tbody>
-        </table>
+        <div className='container'>
+          <div>
+            <table className='table table-hover'>
+              <thead>
+                <tr>
+                  <th>Nickname</th>
+                  <th>Contraseña</th>
+                  <th>Email</th>
+                  <th>Rol</th>
+                  <th>Acciones</th>
+                </tr>
+              </thead>
+              <tbody>
+                {filas}
+              </tbody>
+
+            </table>
+
+          </div>
+          <Link to="/Empleados/Edit" className='btn btn-primary'><span className="material-symbols">Nuevo</span></Link>
+
+        </div>
+
+        <Modal show={this.state.modal} onHide={this.closeModal}>
+          <Modal.Header closeButton>
+            <Modal.Title>Confirmación de Eliminacion</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>¿Está seguro de eliminar el usuario seleccionado?</Modal.Body>
+          <Modal.Footer>
+            <Button variant="danger" onClick={this.closeModal}>
+              Cancelar
+            </Button>
+            <Button variant="primary" onClick={this.handleClickDelete}>
+              Eliminar
+            </Button>
+          </Modal.Footer>
+        </Modal>
       </>
     );
+
   }
 }
 
-export default Empleados;
+export default Empleados
+
+
+
