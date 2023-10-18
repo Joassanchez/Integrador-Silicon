@@ -27,14 +27,13 @@ function Menu() {
         if (Decoded.nombreROL === 1) {
             return (
                 <>
-                    <nav className="navbar navbar-expand-lg bg-body-tertiary ">
+                    <nav className="navbar navbar-expand-lg bg-info fs-5">
                         <div className="container">
-                            <Link to="/" className='nav-link'> Login</Link>
-                            <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                                <span className="navbar-toggler-icon"></span>
-                            </button>
                             <div className="collapse navbar-collapse" id="navbarNav">
                                 <ul className="navbar-nav">
+                                    <li className='nav-item'>
+                                        <Link to="/" className='nav-link'> Login</Link>
+                                    </li>
                                     <li className="nav-item">
                                         <Link to="/Empleados" className='nav-link'> Empleados</Link>
                                     </li>
@@ -42,20 +41,18 @@ function Menu() {
                                         <Link to="/Registros" className='nav-link'> Registro Ventas</Link>
                                     </li>
                                     <li className="nav-item">
-                                        <Link to="/pedido" className='nav-link'> Pedido</Link>
+                                        <Link to="/pedido" className='nav-link'> Registro Pedido</Link>
                                     </li>
                                     <li className="nav-item">
                                         <Link to="/Venta" className='nav-link'> Venta</Link>
                                     </li>
-                                    <li className="nav-item">
-                                        <button className='btn btn-danger' onClick={() => logout()}>
-                                            <span className="material-symbols-outlined">
-                                                logout
-                                            </span>
-                                        </button>
-                                    </li>
-    
+
                                 </ul>
+                                <div className="nav-item ms-3">
+                                    <button className='btn btn-dark' onClick={() => logout()}>
+                                        <i class="bi bi-box-arrow-left"></i>
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     </nav>
@@ -85,7 +82,7 @@ function Menu() {
                                             </span>
                                         </button>
                                     </li>
-    
+
                                 </ul>
                             </div>
                         </div>
@@ -93,7 +90,7 @@ function Menu() {
                 </>
             )
         }
-        
+
     } else {
         return (
             <>
@@ -103,7 +100,7 @@ function Menu() {
                         <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                             <span className="navbar-toggler-icon"></span>
                         </button>
-                       
+
                     </div>
                 </nav>
             </>

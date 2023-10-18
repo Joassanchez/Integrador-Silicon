@@ -304,13 +304,13 @@ export class Venta extends Component {
 
         return (
             
-            <div className='col-12 mt-5'>
-                <div className='col-5 ms-5 p-4 fs-3'>
+            <div className='col-12 mt-2'>
+                <div className='col-5 ms-5 p-2 fs-3'>
                     Empleado: {nombreEmpleado}
                 </div>
                 <div className='d-flex justify-content-around'>
                     <div className='col-5 bg-light text-dark mg-2'>
-                        <div className='p-3 bg-warning fs-2 text-dark col-12 '>
+                        <div className='p-3 bg-info fs-2 text-dark col-12 '>
                             <div className="row justify-content-between">
                                 <div className="col-4">
                                     Venta
@@ -351,9 +351,9 @@ export class Venta extends Component {
                         </div>
                     </div>
                     <div className='col-5 bg-light '>
-                        <div className='p-3 bg-warning fs-2 text-dark col-12 '>
+                        <div className='p-3 bg-info fs-2 text-dark col-12 '>
                             <div className="row justify-content-between">
-                                <div className="col-5">
+                                <div className="col-7">
                                     Detalles de la Venta
                                 </div>
                                 <div className="col-3 text-end">

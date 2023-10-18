@@ -173,6 +173,10 @@ export class Empleados extends Component {
       <>
         <div className='container'>
           <div>
+          <h1 className="mt-4">
+            <strong>Usuarios</strong>
+            <br />
+          </h1>
             <table className='table table-hover'>
               <thead>
                 <tr>
