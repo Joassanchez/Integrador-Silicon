@@ -44,15 +44,14 @@ function Menu() {
                                     <Link to="/pedido" className='nav-link'> Pedido</Link>
                                 </li>
                                 <li className="nav-item">
-
+                                    <Link to="/Venta" className='nav-link'> Venta</Link>
+                                </li>
+                                <li className="nav-item">
                                     <button className='btn btn-danger' onClick={() => logout()}>
                                         <span className="material-symbols-outlined">
                                             logout
                                         </span>
                                     </button>
-
-                                    
-
                                 </li>
 
                             </ul>

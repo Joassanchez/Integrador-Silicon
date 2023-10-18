@@ -8,6 +8,7 @@ import Pedidos from './Pedidos';
 import Registros from './Registros';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import Venta from './Venta';
 
 function App() {
   return (
@@ -23,6 +24,7 @@ function App() {
         <Route path='/pedido' element={<Pedidos/>} />
         <Route path="/Registros" element={<Registros/>} />
         <Route path="/login" element={<Navigate to="/" />} />
+        <Route path="/Venta" element={<Venta/>} />
       </Routes>
     </>
   );
