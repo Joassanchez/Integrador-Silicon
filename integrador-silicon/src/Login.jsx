@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useParams, useNavigate } from 'react-router-dom';
+import jwt_decode from 'jwt-decode';
 
 class Login extends Component {
     constructor(props) {
@@ -61,8 +62,12 @@ class Login extends Component {
                             progress: undefined,
                             theme: 'light',
                         });
-
-                        this.props.navigate('/Empleados');
+                            var tokenDecoded = jwt_decode(result.body.token)
+                            if(tokenDecoded.nombreRO === "ADMINADMINISTRADOR") {
+                                this.props.navigate('/Empleados');
+                            }else{
+                                this.props.navigate('/Registros');
+                            }
                     } else {
                         toast.error(result.body.message, {
                             position: 'bottom-center',
