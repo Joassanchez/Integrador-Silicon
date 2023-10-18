@@ -17,7 +17,6 @@ class Login extends Component {
     handleSubmit = (event) => {
         event.preventDefault();
 
-
         let usuario = {
             nickname: this.state.nickname,
             password: this.state.password,
@@ -28,59 +27,53 @@ class Login extends Component {
             body: JSON.stringify(usuario),
             headers: {
                 'Content-Type': 'application/json',
-
             }
-
-
         }
 
         fetch('http://localhost:8080/security/login', parametros)
-            .then(res => {
-                return res.json()
-                    .then(body => {
-                        return {
-                            status: res.status,
-                            ok: res.ok,
-                            headers: res.headers,
-                            body: body
+            .then((res) => {
+                return res.json().then((body) => {
+                    return {
+                        status: res.status,
+                        ok: res.ok,
+                        headers: res.headers,
+                        body: body,
+                    };
+                });
+            })
+            .then((result) => {
+                if (result.ok) {
+                    sessionStorage.setItem('token', result.body.token);
+                    toast.success('Bienvenido', {
+                        position: 'bottom-center',
+                        autoClose: 5000,
+                        hideProgressBar: false,
+                        closeOnClick: true,
+                        pauseOnHover: true,
+                        draggable: true,
+                        progress: undefined,
+                        theme: 'light',
+                    });
+                    var tokenDecoded = jwt_decode(result.body.token);
 
-                        };
-                    })
-
-
-            }).then(
-                result => {
-                    if (result.ok) {
-                        sessionStorage.setItem('token', result.body.token);
-                        toast.success('Bienvenido', {
-                            position: 'bottom-center',
-                            autoClose: 5000,
-                            hideProgressBar: false,
-                            closeOnClick: true,
-                            pauseOnHover: true,
-                            draggable: true,
-                            progress: undefined,
-                            theme: 'light',
-                        });
-                            var tokenDecoded = jwt_decode(result.body.token)
-                            if(tokenDecoded.nombreRO === "ADMINADMINISTRADOR") {
-                                this.props.navigate('/Empleados');
-                            }else{
-                                this.props.navigate('/Registros');
-                            }
+                    if (tokenDecoded.nombreROL === 1) {
+                        this.props.navigate('/Empleados');
                     } else {
-                        toast.error(result.body.message, {
-                            position: 'bottom-center',
-                            autoClose: 5000,
-                            hideProgressBar: false,
-                            closeOnClick: true,
-                            pauseOnHover: true,
-                            draggable: true,
-                            progress: undefined,
-                            theme: 'light',
-                        });
+                        this.props.navigate('/Registros');
                     }
-                })
+                } else {
+                    toast.error(result.body.message, {
+                        position: 'bottom-center',
+                        autoClose: 5000,
+                        hideProgressBar: false,
+                        closeOnClick: true,
+                        pauseOnHover: true,
+                        draggable: true,
+                        progress: undefined,
+                        theme: 'light',
+                    });
+                }
+            })
             .catch((error) => {
                 toast.error(error.message, {
                     position: 'bottom-center',

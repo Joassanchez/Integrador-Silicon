@@ -18,9 +18,7 @@ export class Venta extends Component {
             crearVenta: [],
             detallesVenta: [],
             Metodo_Pago: [],
-            modal: false,
             
-
             CantVenta: '',
             NombredelProducto: '',
             precioProducto: '',
@@ -33,7 +31,6 @@ export class Venta extends Component {
     }
 
     componentDidMount() {
-
 
         fetch("http://localhost:8080/Registros/Detalles/Productos")
             .then(res => {
@@ -143,20 +140,19 @@ export class Venta extends Component {
             );
     }
 
-    /*showModalConfirmar(idEmpleado){
+    showModalConfirmar(){
         
         this.setState({
+            modal: true
 
-            modal: true,
-            
         })
-    }*/
+        
+    }
 
     closeModal() {
         this.setState({
+            modal: false
 
-            modal: false,
-            idEmpleado: null,
         })
     }
 
@@ -433,7 +429,7 @@ export class Venta extends Component {
                 <div class="container text-center col-5">
                     <div class="row align-items-center m-5">
                         <div class="col">
-                            <Button variant="primary col-12" onClick={this.showModalConfirmar(idEmpleado)}>
+                            <Button variant="primary col-12" onClick={this.showModalConfirmar}>
                                 Cargar Venta
                             </Button>
                         </div>
@@ -449,10 +445,9 @@ export class Venta extends Component {
                         <Button variant="danger" onClick={this.closeModal}>
                             Cancelar
                         </Button>
-                        <Button variant="primary" onClick={this.handleClickCargarVenta}>
+                        <Button variant="primary"  onClick={this.handleClickCargarVenta} >
                             Guardar
                         </Button>
-
                     </Modal.Footer>
                 </Modal>
             </div>

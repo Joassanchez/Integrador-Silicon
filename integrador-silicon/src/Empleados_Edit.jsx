@@ -42,7 +42,7 @@ export class Internal_Vehiculos_Edit extends Component {
             if (result.ok) {
               this.setState({
                 nickname: result.body.detail.nickname,
-                password: result.body.detail.password,
+                password: "",
                 email: result.body.detail.email,
                 id_rol: result.body.detail.id_rol,
               });

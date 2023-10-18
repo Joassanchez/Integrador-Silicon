@@ -530,7 +530,6 @@ export class Registros extends Component {
                         <Button variant="danger" onClick={this.handleClickDeleteDetalle}>
                             Eliminar
                         </Button>
-
                     </Modal.Footer>
                 </Modal>
 

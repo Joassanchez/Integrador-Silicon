@@ -10,8 +10,8 @@ export class Pedidos extends Component {
     this.state = {
       Pedidos: [],
       Detalle_Pedido: [],
-      modal: false,
-      idToDelete: null,
+      
+      idToDelete: '',
     };
 
     this.handleClickDeleteDetalle = this.handleClickDeleteDetalle.bind(this);
@@ -43,7 +43,6 @@ export class Pedidos extends Component {
         if (result.ok) {
           this.setState({
             Pedidos: result.body,
-            modal: false,
           });
         } else {
           toast.error(result.body.message, {
@@ -111,57 +110,62 @@ export class Pedidos extends Component {
   };
 
   handleClickDeleteDetalle() {
+
     let parametros = {
-      method: 'DELETE',
-      headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json',
-      },
-    };
-    debugger
-    const url = `http://localhost:8080/Pedidos/Detalles/${this.state.idToDelete}`;
+        method: 'DELETE',
+        headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+        },
+        body: JSON.stringify({ idToDelete: this.state.idToDelete })
+    }
+   
+    //this.state.idToDelete se carga cuando abrimos el modal con showModal(vehiculo_id)
+    const url = `http://localhost:8080/Pedidos/Detalles/${this.state.idToDelete}`
     fetch(url, parametros)
-      .then((res) => {
-        return res.json().then((body) => {
-          return {
-            status: res.status,
-            ok: res.ok,
-            headers: res.headers,
-            body: body,
-          };
-        });
-      })
-      .then((result) => {
-        if (result.ok) {
-          toast.success(result.body.message, {
-            position: 'bottom-center',
-            autoClose: 5000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-            theme: 'light',
-          });
-          this.closeModal();
-          this.componentDidMount();
-        } else {
-          toast.error(result.body.message, {
-            position: 'bottom-center',
-            autoClose: 5000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-            theme: 'light',
-          });
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  }
+        .then(res => {
+            return res.json()
+                .then(body => {
+                    return {
+                        status: res.status,
+                        ok: res.ok,
+                        headers: res.headers,
+                        body: body
+                    };
+                })
+        }).then(
+            result => {
+                if (result.ok) {
+                    toast.success(result.body.message, {
+                        position: "bottom-center",
+                        autoClose: 5000,
+                        hideProgressBar: false,
+                        closeOnClick: true,
+                        pauseOnHover: true,
+                        draggable: true,
+                        progress: undefined,
+                        theme: "light",
+                    });
+                    this.closeModal();
+                    //al finalizar la eliminacion volvemos a invocar el componentDidMount() para recargar nuestro listado
+                    this.componentDidMount();
+                } else {
+                    toast.error(result.body.message, {
+                        position: "bottom-center",
+                        autoClose: 5000,
+                        hideProgressBar: false,
+                        closeOnClick: true,
+                        pauseOnHover: true,
+                        draggable: true,
+                        progress: undefined,
+                        theme: "light",
+                    });
+                }
+            }
+        ).catch(
+            (error) => { console.log(error) }
+        );
+}
 
   handleChange = (event) => {
     this.setState({ [event.target.name]: event.target.value });
