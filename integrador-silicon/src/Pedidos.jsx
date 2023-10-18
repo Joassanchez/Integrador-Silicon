@@ -10,11 +10,12 @@ export class Pedidos extends Component {
     this.state = {
       Pedidos: [],
       Detalle_Pedido: [],
-      
+
       idToDelete: '',
     };
 
     this.handleClickDeleteDetalle = this.handleClickDeleteDetalle.bind(this);
+    this.showModalEditDetalle = this.showModalEditDetalle.bind(this);
     this.showModalDeleteDetalle = this.showModalDeleteDetalle.bind(this);
     this.closeModal = this.closeModal.bind(this);
   }
@@ -98,6 +99,9 @@ export class Pedidos extends Component {
   closeModal() {
     this.setState({
       modal: false,
+      modalEditDetalle: false,
+
+      idToEdit: null,
       idToDelete: null,
     });
   }
@@ -108,65 +112,71 @@ export class Pedidos extends Component {
       idToDelete: Id_DetallePedido,
     });
   };
+  showModalEditDetalle(Id_DetallePedido) {
+    this.setState({
+      modalEdit: true,
+      idToEdit: Id_DetallePedido,
+    })
+  }
 
   handleClickDeleteDetalle() {
 
     let parametros = {
-        method: 'DELETE',
-        headers: {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json',
-        },
-        body: JSON.stringify({ idToDelete: this.state.idToDelete })
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+      },
+      body: JSON.stringify({ idToDelete: this.state.idToDelete })
     }
-   
+
     //this.state.idToDelete se carga cuando abrimos el modal con showModal(vehiculo_id)
     const url = `http://localhost:8080/Pedidos/Detalles/${this.state.idToDelete}`
     fetch(url, parametros)
-        .then(res => {
-            return res.json()
-                .then(body => {
-                    return {
-                        status: res.status,
-                        ok: res.ok,
-                        headers: res.headers,
-                        body: body
-                    };
-                })
-        }).then(
-            result => {
-                if (result.ok) {
-                    toast.success(result.body.message, {
-                        position: "bottom-center",
-                        autoClose: 5000,
-                        hideProgressBar: false,
-                        closeOnClick: true,
-                        pauseOnHover: true,
-                        draggable: true,
-                        progress: undefined,
-                        theme: "light",
-                    });
-                    this.closeModal();
-                    //al finalizar la eliminacion volvemos a invocar el componentDidMount() para recargar nuestro listado
-                    this.componentDidMount();
-                } else {
-                    toast.error(result.body.message, {
-                        position: "bottom-center",
-                        autoClose: 5000,
-                        hideProgressBar: false,
-                        closeOnClick: true,
-                        pauseOnHover: true,
-                        draggable: true,
-                        progress: undefined,
-                        theme: "light",
-                    });
-                }
-            }
-        ).catch(
-            (error) => { console.log(error) }
-        );
-}
-
+      .then(res => {
+        return res.json()
+          .then(body => {
+            return {
+              status: res.status,
+              ok: res.ok,
+              headers: res.headers,
+              body: body
+            };
+          })
+      }).then(
+        result => {
+          if (result.ok) {
+            toast.success(result.body.message, {
+              position: "bottom-center",
+              autoClose: 5000,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+              progress: undefined,
+              theme: "light",
+            });
+            this.closeModal();
+            //al finalizar la eliminacion volvemos a invocar el componentDidMount() para recargar nuestro listado
+            this.componentDidMount();
+          } else {
+            toast.error(result.body.message, {
+              position: "bottom-center",
+              autoClose: 5000,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+              progress: undefined,
+              theme: "light",
+            });
+          }
+        }
+      ).catch(
+        (error) => { console.log(error) }
+      );
+  }
+  
   handleChange = (event) => {
     this.setState({ [event.target.name]: event.target.value });
   };
@@ -226,12 +236,10 @@ export class Pedidos extends Component {
                       <thead>
                         <tr>
                           <th>Id_DetallePedido</th>
-                          <th>CantPedido</th>
-                          <th>nro_pedido</th>
+                          <th>Producto</th>
+                          <th>Cantidad</th>
                           <th>estado</th>
-                          <th>fecha</th>
-                          <th>nickname</th>
-                          <th>nombreProducto</th>
+                          <th>Usuario</th>
                           <th>Acciones</th>
                         </tr>
                       </thead>
@@ -241,19 +249,17 @@ export class Pedidos extends Component {
                           .map((detalle, detalleIndex) => (
                             <tr key={detalleIndex}>
                               <td>{detalle.Id_DetallePedido}</td>
-                              <td>{detalle.CantPedido}</td>
-                              <td>{detalle.nro_pedido}</td>
-                              <td>{detalle.estado}</td>
-                              <td>{detalle.fecha}</td>
-                              <td>{detalle.nickname}</td>
                               <td>{Pedido.NombreProducto}</td>
+                              <td>{detalle.CantPedido}</td>
+                              <td>{detalle.estado}</td>
+                              <td>{detalle.nickname}</td>
                               <td>
                                 <button
                                   type="button"
                                   className="btn btn-primary"
                                   onClick={() => this.showModalDeleteDetalle_venta(detalle.Id_DetallePedido)}
                                 >
-                                  Editar
+                                  Confirmar
                                 </button>
                                 <span>{"     "}</span>
                                 <button
@@ -261,7 +267,7 @@ export class Pedidos extends Component {
                                   className="btn btn-danger"
                                   onClick={() => this.showModalDeleteDetalle(detalle.Id_DetallePedido)}
                                 >
-                                  Eliminar
+                                  Rechazar
                                 </button>
                               </td>
                             </tr>

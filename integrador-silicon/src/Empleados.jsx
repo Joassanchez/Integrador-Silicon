@@ -151,7 +151,6 @@ export class Empleados extends Component {
       return (
         <tr key={index}>
           <td>{Empleado.nickname}</td>
-          <td>{Empleado.password}</td>
           <td>{Empleado.email}</td>
           <td>{Empleado.nombreROL}</td>
           <td>
@@ -181,7 +180,6 @@ export class Empleados extends Component {
               <thead>
                 <tr>
                   <th>Nickname</th>
-                  <th>Contraseña</th>
                   <th>Email</th>
                   <th>Rol</th>
                   <th>Acciones</th>
