@@ -53,6 +53,6 @@ Hicimos uso de Bootstrap para darle estilo a nuestra web y asi aprovechar distin
 
  - Para iniciar nuestro Frontend debemos seguir los siguientes pasos:
     
-    1. Abrir nuestra terminal y ubicarnos dentro de lade la carpeta Frontend mediante el siguiende comando: cd ./integrador_silicon/  (*Recomendacion: escribir cd y apretar TAB hasta que apareza ./integrador_silicon/*)
+    1. Abrir nuestra terminal y ubicarnos dentro de lade la carpeta Frontend mediante el siguiende comando: cd ./integrador-silicon/  (*Recomendacion: escribir cd y apretar TAB hasta que apareza ./integrador_silicon/*)
     2. Ejecutar el comando: npm install (*Esto descargara todas las dependencias que hace uso el Front*)
     3. Ejecutar el comando: npm start (*Esto inicializara el proyecto de React y nos abrira la pantalla*)
