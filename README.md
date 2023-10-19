@@ -26,8 +26,7 @@ explicar distintos casos:
 
 # Recursos que se utilizaron para el Proyecto:
   Backend:
-  - Node.js (JavaScript)
-  - Express
+  - Node.js + Express (JavaScript)
   - MySQL (SQL)
     
   Frontend:
