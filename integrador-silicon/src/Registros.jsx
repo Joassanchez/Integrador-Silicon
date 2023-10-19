@@ -4,6 +4,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import { Form } from 'react-bootstrap';
+import jwt_decode from "jwt-decode";
 
 export class Registros extends Component {
 
@@ -418,14 +419,20 @@ export class Registros extends Component {
         this.setState({ [event.target.name]: event.target.value });
     }
 
+
     render() {
+
+        var Decoded = jwt_decode(sessionStorage.getItem('token'));
+        const nombreROL = Decoded.nombreROL
+
+        console.log(nombreROL)
 
         return (
             <>
                 <div className="container">
-                <br></br>
-                <h1 className=""><strong>  Registro de Ventas</strong></h1>
-                <br></br>
+                    <br></br>
+                    <h1 className=""><strong>  Registro de Ventas</strong></h1>
+                    <br></br>
                     <span>{"   "}</span>
                     <div className="accordion" id="accordionExample">
                         {this.state.ventas.map((venta, index) => (
@@ -458,9 +465,12 @@ export class Registros extends Component {
                                             </tbody>
                                         </table>
                                     </button>
-                                    <button type="button" className="btn btn-success" onClick={() => this.showModalEditDetalle(venta.nro_venta)}>
-                                        Modificar Metodo de Pago
-                                    </button>
+                                    {nombreROL === 1 && (
+                                        <button type="button" className="btn btn-success" onClick={() => this.showModalEditDetalle(venta.nro_venta)}>
+                                            Modificar Método de Pago
+                                        </button>
+                                    )}
+
 
                                 </h2>
                                 <div
@@ -480,7 +490,9 @@ export class Registros extends Component {
                                                     <th>Unidad de Medida</th>
                                                     <th>Precio x Unidad</th>
                                                     <th>Monto Parcial</th>
-                                                    <th>Opciones</th>
+                                                    {nombreROL === 1 && (
+                                                        <th>Opciones</th>
+                                                    )}
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -495,17 +507,19 @@ export class Registros extends Component {
                                                             <td>{detalle.unidad_medida}</td>
                                                             <td>{'$'}{detalle.precio_venta}</td>
                                                             <td>{'$'}{detalle.Monto_Parcial}</td>
-                                                            <td>
-                                                                <button type="button" className="btn btn-primary "
-                                                                    onClick={() => this.showModalDeleteDetalle_venta(detalle.id_detalle_venta)}>
-                                                                    Editar
-                                                                </button>
-                                                                <span>{"     "}</span>
-                                                                <button type="button" className="btn btn-danger"
-                                                                    onClick={() => this.showModalDeleteDetalle(detalle.id_detalle_venta)}>
-                                                                    Eliminar
-                                                                </button>
-                                                            </td>
+                                                            {nombreROL === 1 && (
+                                                                <td>
+                                                                    <button type="button" className="btn btn-primary "
+                                                                        onClick={() => this.showModalDeleteDetalle_venta(detalle.id_detalle_venta)}>
+                                                                        Editar
+                                                                    </button>
+
+                                                                    <button type="button" className="btn btn-danger"
+                                                                        onClick={() => this.showModalDeleteDetalle(detalle.id_detalle_venta)}>
+                                                                        Eliminar
+                                                                    </button>
+                                                                </td>
+                                                            )}
                                                         </tr>
                                                     ))}
                                             </tbody>
@@ -635,7 +649,7 @@ export class Registros extends Component {
                                                     <li key={productoIndex}>
                                                         <a className="dropdown-item" href="#" onClick={() => this.setState({ productoSeleccionado: producto.Id_producto, nombreProducto: producto.NombreProducto })}>
                                                             {producto.NombreProducto}
-                                                        </a> 
+                                                        </a>
                                                     </li>
                                                 ))}
                                             </ul>

@@ -22,6 +22,7 @@ export class Venta extends Component {
             CantVenta: '',
             NombredelProducto: '',
             precioProducto: '',
+            iddelEmpleado: '',
             
         }
 
@@ -144,7 +145,6 @@ export class Venta extends Component {
         
         this.setState({
             modal: true
-
         })
         
     }
@@ -160,12 +160,10 @@ export class Venta extends Component {
         const detallesVentaActual = [...this.state.detallesVenta];
         const numeroVenta = this.state.crearVenta.length > 0 ? this.state.crearVenta[this.state.crearVenta.length - 1].nro_venta + 1 : 1;
 
-
         this.setState({
             detallesVenta: detallesVentaActual,
             elnumero: numeroVenta
         })
-
     }
 
 
@@ -232,6 +230,7 @@ export class Venta extends Component {
 
     handleClickCargarVenta() {
 
+        
         let parametros = {
             method: 'POST',
             headers: {
@@ -241,7 +240,7 @@ export class Venta extends Component {
             body: JSON.stringify({
 
                 id_metodo: this.state.metodoDePagoSeleccionado, //si o si se debe seleccionar un producto pero es un error, CAMBIAR
-                id_usuario: this.state.idEmpleado
+                id_usuario: this.state.iddelEmpleado
             })
         };
 
@@ -302,6 +301,8 @@ export class Venta extends Component {
         const nombreEmpleado = tokenDecoded.nickname
         const idEmpleado = tokenDecoded.usuarioID
 
+        
+
         return (
             
             <div className='col-12 mt-2'>
@@ -321,7 +322,7 @@ export class Venta extends Component {
                                         className="btn btn-lg btn-dark"
                                         onClick={() => this.CrearVenta()}
                                     >
-                                        <i class="bi bi-clipboard-plus"></i>
+                                        <i className="bi bi-clipboard-plus"></i>
                                     </button>
                                 </div>
                             </div>
@@ -362,12 +363,12 @@ export class Venta extends Component {
                                         className="btn btn-lg btn-dark"
                                         onClick={() => this.CrearVenta()}
                                     >
-                                        <i class="bi bi-trash3"></i>
+                                        <i className="bi bi-trash3"></i>
                                     </button>
                                 </div>
                             </div>
                         </div>
-                        <div class="row justify-content-start">
+                        <div className="row justify-content-start">
                             <div className="col-2 p-2 ms-4 fs-3">
                                 Venta
                             </div>
@@ -392,7 +393,7 @@ export class Venta extends Component {
                                                     className="btn btn-dark me-3"
                                                     onClick={() => this.decrementarProducto(detalles.Id_producto)}
                                                 >
-                                                    <i class="bi bi-dash-circle"></i>
+                                                    <i className="bi bi-dash-circle"></i>
                                                 </button>
 
                                                 <button
@@ -400,7 +401,7 @@ export class Venta extends Component {
                                                     className="btn btn-danger"
                                                     onClick={() => this.eliminarProducto(detalles.Id_producto)}
                                                 >
-                                                    <i class="bi bi-trash3"></i>
+                                                    <i className="bi bi-trash3"></i>
                                                 </button>
                                             </td>
 
@@ -426,9 +427,9 @@ export class Venta extends Component {
                         </div>
                     </div>
                 </div>
-                <div class="container text-center col-5">
-                    <div class="row align-items-center m-5">
-                        <div class="col">
+                <div className="container text-center col-5">
+                    <div className="row align-items-center m-5">
+                        <div className="col">
                             <Button variant="primary col-12" onClick={this.showModalConfirmar}>
                                 Cargar Venta
                             </Button>

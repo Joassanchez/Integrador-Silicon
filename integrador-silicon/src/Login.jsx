@@ -59,7 +59,7 @@ class Login extends Component {
                     if (tokenDecoded.nombreROL === 1) {
                         this.props.navigate('/Empleados');
                     } else {
-                        this.props.navigate('/Registros');
+                        this.props.navigate('/Venta');
                     }
                 } else {
                     toast.error(result.body.message, {

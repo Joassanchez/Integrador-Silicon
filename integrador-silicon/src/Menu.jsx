@@ -46,7 +46,6 @@ function Menu() {
                                     <li className="nav-item">
                                         <Link to="/Venta" className='nav-link'> Venta</Link>
                                     </li>
-
                                 </ul>
                                 <div className="nav-item ms-3">
                                     <button className='btn btn-dark' onClick={() => logout()}>
@@ -61,29 +60,28 @@ function Menu() {
         } else {
             return (
                 <>
-                    <nav className="navbar navbar-expand-lg bg-body-tertiary ">
+                    <nav className="navbar navbar-expand-lg bg-info fs-5">
                         <div className="container">
-                            <Link to="/" className='nav-link'> Login</Link>
-                            <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                                <span className="navbar-toggler-icon"></span>
-                            </button>
                             <div className="collapse navbar-collapse" id="navbarNav">
                                 <ul className="navbar-nav">
                                     <li className="nav-item">
-                                        <Link to="/Registros" className='nav-link'> Registro Ventas</Link>
+                                        <li><Link to="/" className='nav-link'> Login</Link></li>
                                     </li>
                                     <li className="nav-item">
                                         <Link to="/Venta" className='nav-link'> Venta</Link>
                                     </li>
                                     <li className="nav-item">
-                                        <button className='btn btn-danger' onClick={() => logout()}>
-                                            <span className="material-symbols-outlined">
-                                                logout
-                                            </span>
-                                        </button>
+                                        <Link to="/Registros" className='nav-link'> Registro Ventas</Link>
                                     </li>
-
+                                    <li className="nav-item">
+                                        <Link to="/Pedidos" className='nav-link'> Pedidos de Stock</Link>
+                                    </li>
                                 </ul>
+                                <div className="nav-item ms-3">
+                                    <button className='btn btn-dark' onClick={() => logout()}>
+                                        <i class="bi bi-box-arrow-left"></i>
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     </nav>
