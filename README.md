@@ -32,7 +32,19 @@ explicar distintos casos:
   Frontend:
   - React (JSX)
   - Bootstrap 5.0
+
+# Frontend "Heladeria los Copos" 
+En nuestro Front encontraremos la carpeta de React que es en donde desarrollamos todo el Front del Proyecto, en la carpeta de src encontraremos sus distintos archivos segun sus pantallas o funcionalidades. 
+Hicimos uso de Bootstrap para darle estilo a nuestra web y asi aprovechar distintas estructuras que nos proporciona.
+
+ - Para iniciar nuestro Frontend debemos seguir los siguientes pasos:
     
+    1. Abrir nuestra terminal y ubicarnos dentro de lade la carpeta Frontend mediante el siguiende comando: cd ./integrador-silicon/  (*Recomendacion: escribir cd y apretar TAB hasta que apareza ./integrador_silicon/*)
+    2. Ejecutar el comando: npm install (*Esto descargara todas las dependencias que hace uso el Front*)
+    3. Ejecutar el comando: npm start (*Esto inicializara el proyecto de React y nos abrira la pantalla*)
+
+  *Si todo es correcto se mostraran el proyecto por la pantalla*
+
 # Backend "Heladeria los Copos" 
 Dentro de nuesto repositorio del Backend encontraremos los scrips de nuestra Base de Datos en SQL, la imagen del Diagrama de Entidad de Relacion(DER) y los archivos de las distintas 
 funcionalidades del Proyecto segun sus usuraios (EMPLEADO o ADMINISTRADOR), en el lenguaje JavaScript.
@@ -45,13 +57,3 @@ funcionalidades del Proyecto segun sus usuraios (EMPLEADO o ADMINISTRADOR), en e
     3. Ejecutar el comando: nodemon (*Esto inicializara el back*)
 
   *Si todo es correcto se mostraran mensajes en la Terminal*
-
-# Frontend "Heladeria los Copos" 
-En nuestro Front encontraremos la carpeta de React que es en donde desarrollamos todo el Front del Proyecto, en la carpeta de src encontraremos sus distintos archivos segun sus pantallas o funcionalidades. 
-Hicimos uso de Bootstrap para darle estilo a nuestra web y asi aprovechar distintas estructuras que nos proporciona.
-
- - Para iniciar nuestro Frontend debemos seguir los siguientes pasos:
-    
-    1. Abrir nuestra terminal y ubicarnos dentro de lade la carpeta Frontend mediante el siguiende comando: cd ./integrador-silicon/  (*Recomendacion: escribir cd y apretar TAB hasta que apareza ./integrador_silicon/*)
-    2. Ejecutar el comando: npm install (*Esto descargara todas las dependencias que hace uso el Front*)
-    3. Ejecutar el comando: npm start (*Esto inicializara el proyecto de React y nos abrira la pantalla*)
