@@ -10,129 +10,61 @@ export class Pedidos extends Component {
     this.state = {
       Pedidos: [],
       Detalle_Pedido: [],
-
-      idToDelete: '',
+      productos: [],
+      idToCambiar: '',
+      estado: 'Aceptado',
+      modal: false,
+      CantPedido: '',      // Agregar estas propiedades con valores iniciales vacíos
+      Id_producto: '',      // Agregar estas propiedades con valores iniciales vacíos
+      Id_proveedor: '',    // Agregar estas propiedades con valores iniciales vacíos
     };
 
-    this.handleClickDeleteDetalle = this.handleClickDeleteDetalle.bind(this);
-    this.showModalEditDetalle = this.showModalEditDetalle.bind(this);
-    this.showModalDeleteDetalle = this.showModalDeleteDetalle.bind(this);
+    this.handleClickCambiarDetalle = this.handleClickCambiarDetalle.bind(this);
+    this.showModalCambiarDetalle = this.showModalCambiarDetalle.bind(this);
     this.closeModal = this.closeModal.bind(this);
   }
 
   componentDidMount() {
-    let parametros = {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        'authorization': sessionStorage.getItem('token'),
-      },
-    };
+    fetch("http://localhost:8080/Pedido")
+      .then(res => {
+        return res.json()
+          .then(body => {
+            console.log(body)
+            return {
+              status: res.status,
+              ok: res.ok,
+              headers: res.headers,
+              body: body
+            };
+          })
 
-    fetch('http://localhost:8080/pedido', parametros)
-      .then((res) => {
-        return res.json().then((body) => {
-          return {
-            status: res.status,
-            ok: res.ok,
-            headers: res.headers,
-            body: body,
-          };
-        });
-      })
-      .then((result) => {
-        if (result.ok) {
-          this.setState({
-            Pedidos: result.body,
-          });
-        } else {
-          toast.error(result.body.message, {
-            position: 'bottom-center',
-            autoClose: 5000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-            theme: 'light',
-          });
+      }).then(
+        result => {
+          if (result.ok) {
+            this.setState({
+              Pedidos: result.body,
+              //siempre que se monta el componente el modal tiene que estar cerrado
+            });
+          } else {
+            toast.error(result.body.message, {
+              position: "bottom-center",
+              autoClose: 5000,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+              progress: undefined,
+              theme: "light",
+            });
+          }
         }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+      ).catch(
+        (error) => { console.log(error) }
 
-    fetch('http://localhost:8080/Pedidos/Detalles')
-      .then((res) => {
-        return res.json().then((body) => {
-          return {
-            status: res.status,
-            ok: res.ok,
-            headers: res.headers,
-            body: body,
-          };
-        });
-      })
-      .then((result) => {
-        if (result.ok) {
-          this.setState({
-            Detalle_Pedido: result.body,
-          });
-        } else {
-          toast.error(result.body.message, {
-            position: 'bottom-center',
-            autoClose: 5000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-            theme: 'light',
-          });
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  }
+      );
 
-  closeModal() {
-    this.setState({
-      modal: false,
-      modalEditDetalle: false,
 
-      idToEdit: null,
-      idToDelete: null,
-    });
-  }
-
-  showModalDeleteDetalle = (Id_DetallePedido) => {
-    this.setState({
-      modal: true,
-      idToDelete: Id_DetallePedido,
-    });
-  };
-  showModalEditDetalle(Id_DetallePedido) {
-    this.setState({
-      modalEdit: true,
-      idToEdit: Id_DetallePedido,
-    })
-  }
-
-  handleClickDeleteDetalle() {
-
-    let parametros = {
-      method: 'DELETE',
-      headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json',
-      },
-      body: JSON.stringify({ idToDelete: this.state.idToDelete })
-    }
-
-    //this.state.idToDelete se carga cuando abrimos el modal con showModal(vehiculo_id)
-    const url = `http://localhost:8080/Pedidos/Detalles/${this.state.idToDelete}`
-    fetch(url, parametros)
+    fetch("http://localhost:8080/Pedidos/Detalles/")
       .then(res => {
         return res.json()
           .then(body => {
@@ -146,7 +78,12 @@ export class Pedidos extends Component {
       }).then(
         result => {
           if (result.ok) {
-            toast.success(result.body.message, {
+            this.setState({
+              Detalle_Pedido: result.body,
+              //siempre que se monta el componente el modal tiene que estar cerrado
+            });
+          } else {
+            toast.error(result.body.message, {
               position: "bottom-center",
               autoClose: 5000,
               hideProgressBar: false,
@@ -156,9 +93,32 @@ export class Pedidos extends Component {
               progress: undefined,
               theme: "light",
             });
-            this.closeModal();
-            //al finalizar la eliminacion volvemos a invocar el componentDidMount() para recargar nuestro listado
-            this.componentDidMount();
+          }
+        }
+      ).catch(
+        (error) => { console.log(error) }
+      );
+
+
+    fetch("http://localhost:8080/Pedidos/Detalles/Productos")
+      .then(res => {
+        return res.json()
+          .then(body => {
+            console.log(body)
+            return {
+              status: res.status,
+              ok: res.ok,
+              headers: res.headers,
+              body: body
+            };
+          })
+      }).then(
+        result => {
+          if (result.ok) {
+            this.setState({
+              productos: result.body,
+              //siempre que se monta el componente el modal tiene que estar cerrado
+            });
           } else {
             toast.error(result.body.message, {
               position: "bottom-center",
@@ -176,7 +136,102 @@ export class Pedidos extends Component {
         (error) => { console.log(error) }
       );
   }
-  
+
+  closeModal() {
+    this.setState({
+      modal: false,
+      idToCambiar: '', // Restablecer el idToCambiar
+      estado: 'Aceptado', // Restablecer el estado a Aceptado
+    });
+  }
+
+  showModalCambiarDetalle = (Id_DetallePedido) => {
+    this.setState({
+      modal: true,
+      idToCambiar: Id_DetallePedido,
+    });
+  };
+
+  handleClickCambiarDetalle() {
+    if (!this.state.CantPedido || !this.state.Id_producto || !this.state.Id_proveedor) {
+      toast.error("Por favor, complete todos los campos.", {
+        position: "bottom-center",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
+      return;
+    }
+
+    let parametros = {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+      },
+      body: JSON.stringify({
+        CantPedido: this.state.CantPedido,
+        Id_producto: this.state.Id_producto,
+        Id_proveedor: this.state.Id_proveedor,
+        estado: this.state.estado,
+      })
+    };
+
+    console.log(parametros.body);
+
+    const url = `http://localhost:8080/Registros/Detalles/${this.state.idToCambiar}`;
+
+    fetch(url, parametros)
+      .then(res => {
+        return res.json()
+          .then(body => {
+            return {
+              status: res.status,
+              ok: res.ok,
+              headers: res.headers,
+              body: body
+            };
+          })
+      })
+      .then(
+        result => {
+          if (result.ok) {
+            toast.success(result.body.message, {
+              position: "bottom-center",
+              autoClose: 5000,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+              progress: undefined,
+              theme: "light",
+            });
+            // Al finalizar la modificación, volvemos a invocar el componentDidMount() para recargar nuestro listado
+            this.closeModal();
+            this.componentDidMount();
+          } else {
+            toast.error(result.body.message, {
+              position: "bottom-center",
+              autoClose: 5000,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+              progress: undefined,
+              theme: "light",
+            });
+          }
+        }
+      )
+      .catch(
+        (error) => { console.error('Error:', error); }
+      );
+  }
+
   handleChange = (event) => {
     this.setState({ [event.target.name]: event.target.value });
   };
@@ -185,11 +240,11 @@ export class Pedidos extends Component {
     return (
       <>
         <div className="container">
-          <br></br>
+          <br />
           <h1 className="">
             <strong>Registro de Pedidos</strong>
           </h1>
-          <br></br>
+          <br />
           <span>{"   "}</span>
           <div className="accordion" id="accordionExample">
             {this.state.Pedidos.map((Pedido, index) => (
@@ -257,7 +312,7 @@ export class Pedidos extends Component {
                                 <button
                                   type="button"
                                   className="btn btn-primary"
-                                  onClick={() => this.showModalDeleteDetalle_venta(detalle.Id_DetallePedido)}
+                                  onClick={() => this.showModalCambiarDetalle(detalle.Id_DetallePedido)}
                                 >
                                   Confirmar
                                 </button>
@@ -265,7 +320,7 @@ export class Pedidos extends Component {
                                 <button
                                   type="button"
                                   className="btn btn-danger"
-                                  onClick={() => this.showModalDeleteDetalle(detalle.Id_DetallePedido)}
+                                  onClick={() => this.showModalCambiarDetalle(detalle.Id_DetallePedido)}
                                 >
                                   Rechazar
                                 </button>
@@ -282,15 +337,70 @@ export class Pedidos extends Component {
         </div>
         <Modal show={this.state.modal} onHide={this.closeModal}>
           <Modal.Header closeButton>
-            <Modal.Title>Confirmación de Eliminacion</Modal.Title>
+            <Modal.Title>Cambiar estado de detalle de pedido</Modal.Title>
           </Modal.Header>
-          <Modal.Body>¿Está seguro de eliminar el Detalle seleccionado?</Modal.Body>
+          <Modal.Body>
+            <form onSubmit={this.handleClickCambiarDetalle}>
+              <div className="form-group">
+                <label htmlFor="estado">Estado</label>
+                <select
+                  id="estado"
+                  name="estado"
+                  className="form-control"
+                  required
+                  value={this.state.estado}
+                  onChange={this.handleChange}
+                >
+                  <option value="Aceptado">Aceptado</option>
+                  <option value="Rechazado">Rechazado</option>
+                </select>
+              </div>
+              <div className="form-group">
+                <label htmlFor="CantPedido">Cantidad de Pedido</label>
+                <input
+                  type="text"
+                  id="CantPedido"
+                  name="CantPedido"
+                  className="form-control"
+                  value={this.state.CantPedido}
+                  onChange={this.handleChange}
+                />
+              </div>
+              <div className="dropdown mg-10">
+                <button className="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                  {this.state.nombreProducto || 'Seleccionar Producto'}
+                </button>
+                <ul className="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                  {this.state.productos.map((producto, productoIndex) => (
+                    <li key={productoIndex}>
+                      <a className="dropdown-item" href="#" onClick={() => this.setState({ Id_producto: producto.Id_producto, nombreProducto: producto.NombreProducto })}>
+                        {producto.NombreProducto}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+
+              <div className="form-group">
+                <label htmlFor="Id_proveedor">ID del Proveedor</label>
+                <input
+                  type="text"
+                  id="Id_proveedor"
+                  name="Id_proveedor"
+                  className="form-control"
+                  value={this.state.Id_proveedor}
+                  onChange={this.handleChange}
+                />
+              </div>
+            </form>
+          </Modal.Body>
           <Modal.Footer>
-            <Button variant="info" onClick={this.closeModal}>
-              Cancelar
+            <Button variant="primary" onClick={this.handleClickCambiarDetalle}>
+              Confirmar
             </Button>
-            <Button variant="danger" onClick={this.handleClickDeleteDetalle}>
-              Eliminar
+            <Button variant="secondary" onClick={this.closeModal}>
+              Cancelar
             </Button>
           </Modal.Footer>
         </Modal>
