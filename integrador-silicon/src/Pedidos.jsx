@@ -19,6 +19,9 @@ class Pedidos extends Component {
       modalEdit: false,
       modal: false,
       idToDelete: null,
+      CantPedido: "",
+      Id_producto: "",
+      Id_proveedor: "",
     };
 
     this.handleClickEditDetalle = this.handleClickEditDetalle.bind(this);
@@ -30,124 +33,127 @@ class Pedidos extends Component {
 
   componentDidMount() {
     fetch("http://localhost:8080/Pedido")
-    .then(res => {
+      .then(res => {
         return res.json()
-            .then(body => {
-                console.log(body)
-                return {
-                    status: res.status,
-                    ok: res.ok,
-                    headers: res.headers,
-                    body: body
-                };
-            })
+          .then(body => {
+            console.log(body)
+            return {
+              status: res.status,
+              ok: res.ok,
+              headers: res.headers,
+              body: body
+            };
+          })
 
-    }).then(
+      }).then(
         result => {
-            if (result.ok) {
-                this.setState({
-                  Pedidos: result.body,
-                    //siempre que se monta el componente el modal tiene que estar cerrado
-                });
-            } else {
-                toast.error(result.body.message, {
-                    position: "bottom-center",
-                    autoClose: 5000,
-                    hideProgressBar: false,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    progress: undefined,
-                    theme: "light",
-                });
-            }
+          if (result.ok) {
+            this.setState({
+              Pedidos: result.body,
+              //siempre que se monta el componente el modal tiene que estar cerrado
+            });
+          } else {
+            toast.error(result.body.message, {
+              position: "bottom-center",
+              autoClose: 5000,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+              progress: undefined,
+              theme: "light",
+            });
+          }
         }
-    ).catch(
+      ).catch(
         (error) => { console.log(error) }
 
-    );
+      );
 
 
-fetch("http://localhost:8080/Pedidos/Detalles/")
-    .then(res => {
+    fetch("http://localhost:8080/Pedidos/Detalles/")
+      .then(res => {
         return res.json()
-            .then(body => {
-                return {
-                    status: res.status,
-                    ok: res.ok,
-                    headers: res.headers,
-                    body: body
-                };
-            })
-    }).then(
+          .then(body => {
+            return {
+              status: res.status,
+              ok: res.ok,
+              headers: res.headers,
+              body: body
+            };
+          })
+      }).then(
         result => {
-            if (result.ok) {
-                this.setState({
-                  Detalle_Pedido: result.body,
-                    //siempre que se monta el componente el modal tiene que estar cerrado
-                });
-            } else {
-                toast.error(result.body.message, {
-                    position: "bottom-center",
-                    autoClose: 5000,
-                    hideProgressBar: false,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    progress: undefined,
-                    theme: "light",
-                });
-            }
+          if (result.ok) {
+            this.setState({
+              Detalle_Pedido: result.body,
+              //siempre que se monta el componente el modal tiene que estar cerrado
+            });
+          } else {
+            toast.error(result.body.message, {
+              position: "bottom-center",
+              autoClose: 5000,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+              progress: undefined,
+              theme: "light",
+            });
+          }
         }
-    ).catch(
+      ).catch(
         (error) => { console.log(error) }
-    );
+      );
 
-fetch("http://localhost:8080/Proveedor")
-    .then(res => {
+    fetch("http://localhost:8080/Proveedor")
+      .then(res => {
         return res.json()
-            .then(body => {
-                return {
-                    status: res.status,
-                    ok: res.ok,
-                    headers: res.headers,
-                    body: body
-                };
-            })
-    }).then(
+          .then(body => {
+            return {
+              status: res.status,
+              ok: res.ok,
+              headers: res.headers,
+              body: body
+            };
+          })
+      }).then(
         result => {
-            if (result.ok) {
-                this.setState({
-                  Proveedores: result.body,
-                    //siempre que se monta el componente el modal tiene que estar cerrado
-                });
-            } else {
-                toast.error(result.body.message, {
-                    position: "bottom-center",
-                    autoClose: 5000,
-                    hideProgressBar: false,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    progress: undefined,
-                    theme: "light",
-                });
-            }
+          if (result.ok) {
+            this.setState({
+              Proveedores: result.body,
+              //siempre que se monta el componente el modal tiene que estar cerrado
+            });
+          } else {
+            toast.error(result.body.message, {
+              position: "bottom-center",
+              autoClose: 5000,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+              progress: undefined,
+              theme: "light",
+            });
+          }
         }
-    ).catch(
+      ).catch(
         (error) => { console.log(error) }
-    );
+      );
   }
 
-  
 
-  showModalEditDetalle(Id_DetallePedido) {
+
+  showModalEditDetalle(Id_DetallePedido, CantPedido, Id_producto, Id_proveedor) {
     this.setState({
       modalEdit: true,
       idToCambiar: Id_DetallePedido,
+      CantPedido,  
+      Id_producto, 
+      Id_proveedor 
     });
   }
-
+  
   showModalDeleteDetalle(idDetallePedido) {
     this.setState({
       modal: true,
@@ -174,6 +180,20 @@ fetch("http://localhost:8080/Proveedor")
   }
 
   handleClickEditDetalle() {
+    let estadoNum;
+    switch (this.state.estado) {
+      case 'Aceptado':
+        estadoNum = 2;
+        break;
+      case 'Rechazado':
+        estadoNum = 3;
+        break;
+      default:
+        estadoNum = 1;
+    }
+
+    const { CantPedido, Id_producto, Id_proveedor } = this.state;
+
     let parametros = {
       method: 'PUT',
       headers: {
@@ -181,7 +201,10 @@ fetch("http://localhost:8080/Proveedor")
         'Accept': 'application/json',
       },
       body: JSON.stringify({
-        Id_proveedor: this.state.Id_proveedor,
+        estado: estadoNum,
+        CantPedido,
+        Id_producto,
+        Id_proveedor,
       })
     };
 
@@ -234,21 +257,26 @@ fetch("http://localhost:8080/Proveedor")
     this.setState({ [event.target.name]: event.target.value });
   };
   traducirEstado = (estado) => {
-  switch (estado) {
-    case 1:
-      return "En espera";
-    case 2:
-      return "Aceptado";
-    case 3:
-      return "Rechazado";
-    default:
-      return "Desconocido"; 
+    switch (estado) {
+      case 1:
+        return "En espera";
+      case 2:
+        return "Aceptado";
+      case 3:
+        return "Rechazado";
+      default:
+        return "Desconocido";
+    }
   }
-}
-
-
   render() {
-    const { Pedidos, Detalle_Pedido, Proveedores, modalEdit, modal, idToDelete, idToCambiar } = this.state;
+    const {
+      Pedidos,
+      Detalle_Pedido,
+      modalEdit,
+      modal,
+
+    } = this.state;
+
     var Decoded = jwt_decode(sessionStorage.getItem('token'));
     const nombreROL = Decoded.nombreROL;
 
@@ -323,11 +351,7 @@ fetch("http://localhost:8080/Proveedor")
                             <td>{detalle.CantPedido}</td>
                             {nombreROL === 1 && (
                               <td>
-                                <button
-                                  type="button"
-                                  className="btn btn-primary"
-                                  onClick={() => this.showModalDeleteDetalle_venta(detalle.id_detalle_pedido)}
-                                >
+                                <button type="button" className="btn btn-primary" onClick={() => this.showModalEditDetalle(Pedido.nro_pedido, detalle.CantPedido, detalle.Id_producto, detalle.Id_proveedor)}>
                                   Editar
                                 </button>
                                 <button
@@ -348,6 +372,7 @@ fetch("http://localhost:8080/Proveedor")
             </div>
           ))}
         </div>
+
 
         <Modal show={modal} onHide={this.closeModal}>
           <Modal.Header closeButton>
@@ -402,5 +427,4 @@ fetch("http://localhost:8080/Proveedor")
     );
   }
 }
-
 export default Pedidos;
