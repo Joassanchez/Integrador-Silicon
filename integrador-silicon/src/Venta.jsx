@@ -1,4 +1,4 @@
-import React, { Component, useState } from 'react';
+import React, { Component } from 'react';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import 'bootstrap-icons/font/bootstrap-icons.css'
@@ -18,16 +18,22 @@ export class Venta extends Component {
             crearVenta: [],
             detallesVenta: [],
             Metodo_Pago: [],
-            
-            CantVenta: '',
+            detalles_Enviar: [],
+
+            CantVenta: '', // Inicializa con 1 o el valor inicial que desees
             NombredelProducto: '',
-            precioProducto: '',
+            precioProducto: 0, // Inicializa con 0 o el valor inicial que desees
+            metodoDePagoSeleccionado: '',
+            modal: false,
             iddelEmpleado: '',
-            
+
+            statusVenta: false,
+
         }
 
         this.showModalConfirmar = this.showModalConfirmar.bind(this);
         this.closeModal = this.closeModal.bind(this);
+        this.handleClickCargarVenta = this.handleClickCargarVenta.bind(this);
 
     }
 
@@ -37,7 +43,7 @@ export class Venta extends Component {
             .then(res => {
                 return res.json()
                     .then(body => {
-                        console.log(body)
+                        //console.log(body)
                         return {
                             status: res.status,
                             ok: res.ok,
@@ -50,7 +56,6 @@ export class Venta extends Component {
                     if (result.ok) {
                         this.setState({
                             productos: result.body,
-                            //siempre que se monta el componente el modal tiene que estar cerrado
                         });
                     } else {
                         toast.error(result.body.message, {
@@ -73,7 +78,7 @@ export class Venta extends Component {
             .then(res => {
                 return res.json()
                     .then(body => {
-                        console.log(body)
+                        //console.log(body)
                         return {
                             status: res.status,
                             ok: res.ok,
@@ -109,6 +114,7 @@ export class Venta extends Component {
             .then(res => {
                 return res.json()
                     .then(body => {
+                        // console.log(body)
                         return {
                             status: res.status,
                             ok: res.ok,
@@ -121,7 +127,6 @@ export class Venta extends Component {
                     if (result.ok) {
                         this.setState({
                             Metodo_Pago: result.body,
-                            //siempre que se monta el componente el modal tiene que estar cerrado
                         });
                     } else {
                         toast.error(result.body.message, {
@@ -141,18 +146,19 @@ export class Venta extends Component {
             );
     }
 
-    showModalConfirmar(){
-        
+    showModalConfirmar() {
+
         this.setState({
-            modal: true
+            modal: true,
         })
-        
     }
 
-    closeModal() {
+    closeModal = () => {
         this.setState({
-            modal: false
-
+            modal: false,
+            metodoDePagoSeleccionado: null,
+            statusVenta: false,
+            detallesVenta: [],
         })
     }
 
@@ -162,13 +168,14 @@ export class Venta extends Component {
 
         this.setState({
             detallesVenta: detallesVentaActual,
-            elnumero: numeroVenta
-        })
+            nuevaVenta: numeroVenta,
+            statusVenta: true,
+        });
+
     }
 
-
     eliminarTodo() {
-
+        this.closeModal();
     }
 
     eliminarProducto(IdProducto) {
@@ -199,8 +206,12 @@ export class Venta extends Component {
     }
 
     agregarProducto(Id_Producto, NombreProducto, precio_unitario) {
+
         const detallesVentaActual = [...this.state.detallesVenta];
+        const detalles_Enviar = [...this.state.detalles_Enviar]
         const productoIndex = detallesVentaActual.findIndex(detalle => detalle.Id_producto === Id_Producto);
+
+        const numeroVenta = this.state.crearVenta.length > 0 ? this.state.crearVenta[this.state.crearVenta.length - 1].nro_venta + 1 : 1;
 
         let montoTotal = this.state.CantVenta * precio_unitario;
 
@@ -218,51 +229,65 @@ export class Venta extends Component {
             });
         }
 
+        if (productoIndex !== -1) {
+
+            detalles_Enviar[productoIndex].CantVenta += 1;
+
+        } else {
+
+            detalles_Enviar.push({
+
+                nro_venta: numeroVenta,
+                Id_producto: Id_Producto,
+                CantVenta: 1
+            })
+        }
+
         this.setState({
             Id_producto: Id_Producto,
-            detallesVenta: detallesVentaActual,
             CantVenta: this.state.CantVenta + 1,
             NombredelProducto: NombreProducto,
             precioProducto: precio_unitario,
+
+            detallesVenta: detallesVentaActual,
+            detalles_Enviar: detalles_Enviar
 
         });
     }
 
     handleClickCargarVenta() {
+        console.log(this.state.metodoDePagoSeleccionado);
+        var tokenDecoded = jwt_decode(sessionStorage.getItem('token'));
+        const idEmpleado = tokenDecoded.usuarioID;
+        let { metodoDePagoSeleccionado } = this.state;
 
-        
-        let parametros = {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Accept': 'application/json',
-            },
-            body: JSON.stringify({
+        const detalles_Enviar = this.state.detalles_Enviar;
 
-                id_metodo: this.state.metodoDePagoSeleccionado, //si o si se debe seleccionar un producto pero es un error, CAMBIAR
-                id_usuario: this.state.iddelEmpleado
-            })
-        };
+        // Verifica que los valores estén presentes y válidos
+        if (metodoDePagoSeleccionado && idEmpleado) {
+            let parametros = {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                },
+                body: JSON.stringify({
+                    id_usuario: idEmpleado,
+                    id_metodo: metodoDePagoSeleccionado,
 
-        console.log(parametros.body)
+                })
+            };
 
-        const url = `http://localhost:8080/Registros/Detalles/${this.state.idToEditDetalle}`
+            console.log(parametros.body)
 
-        fetch(url, parametros)
-            .then(res => {
-                return res.json()
-                    .then(body => {
-                        return {
-                            status: res.status,
-                            ok: res.ok,
-                            headers: res.headers,
-                            body: body
-                        };
+            const url = `http://localhost:8080/Registros/`;
 
-                    })
-            }).then(
-                result => {
+            fetch(url, parametros)
+                .then(res => res.json())
+                .then(result => {
+                    // Maneja la respuesta de la solicitud aquí
                     if (result.ok) {
+                        // Si la solicitud fue exitosa
                         toast.success(result.body.message, {
                             position: "bottom-center",
                             autoClose: 5000,
@@ -273,11 +298,8 @@ export class Venta extends Component {
                             progress: undefined,
                             theme: "light",
                         });
-                        //al finalizar la modificacion volvemos a invocar el componentDidMount() para recargar nuestro listado
-
-                        this.closeModal();
-                        this.componentDidMount();
                     } else {
+                        // Si hay un error en la solicitud
                         toast.error(result.body.message, {
                             position: "bottom-center",
                             autoClose: 5000,
@@ -289,22 +311,81 @@ export class Venta extends Component {
                             theme: "light",
                         });
                     }
-                }
-            ).catch(
-                (error) => { console.error('Error:', error); }
-            );
+                })
+                .catch(error => {
+                    // Maneja los errores de la solicitud aquí
+                    console.error("Error:", error);
+                    // Muestra un mensaje de error
+                });
+
+            if (detalles_Enviar) {
+
+                let parametrosDetalles = {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        detalles_Enviar
+                    })
+                };
+
+                console.log(parametrosDetalles.body)
+
+                const url = `http://localhost:8080/Registros/Detalles`;
+
+                fetch(url, parametrosDetalles)
+                    .then(res => res.json())
+                    .then(result => {
+                        // Maneja la respuesta de la solicitud aquí
+                        if (result.ok) {
+                            // Si la solicitud fue exitosa
+                            toast.success(result.body.message, {
+                                position: "bottom-center",
+                                autoClose: 5000,
+                                hideProgressBar: false,
+                                closeOnClick: true,
+                                pauseOnHover: true,
+                                draggable: true,
+                                progress: undefined,
+                                theme: "light",
+                            });
+                            this.closeModal();
+                            this.componentDidMount();
+                        } else {
+                            // Si hay un error en la solicitud
+                            toast.error(result.body.message, {
+                                position: "bottom-center",
+                                autoClose: 5000,
+                                hideProgressBar: false,
+                                closeOnClick: true,
+                                pauseOnHover: true,
+                                draggable: true,
+                                progress: undefined,
+                                theme: "light",
+                            });
+                        }
+                    })
+                    .catch(error => {
+                        // Maneja los errores de la solicitud aquí
+                        console.error("Error:", error);
+                        // Muestra un mensaje de error
+                    });
+            }
+        };
     }
+
 
     render() {
 
         var tokenDecoded = jwt_decode(sessionStorage.getItem('token'));
-        const nombreEmpleado = tokenDecoded.nickname
-        const idEmpleado = tokenDecoded.usuarioID
-
-        
+        const nombreEmpleado = tokenDecoded.nickname;
+        const statusVenta = this.state.statusVenta;
+        const numeroVenta = this.state.nuevaVenta;
 
         return (
-            
+
             <div className='col-12 mt-2'>
                 <div className='col-5 ms-5 p-2 fs-3'>
                     Empleado: {nombreEmpleado}
@@ -336,15 +417,20 @@ export class Venta extends Component {
                                     {this.state.productos.map(producto => (
                                         <tr key={producto.id}>
                                             <td className='align-items-center fs-5'>{producto.NombreProducto}</td>
-                                            <td className='text-center'>
-                                                <button
-                                                    type="button"
-                                                    className="btn btn-primary"
-                                                    onClick={() => this.agregarProducto(producto.Id_producto, producto.NombreProducto, producto.precio_venta)}
-                                                >
-                                                    <i className="bi bi-plus-circle"></i>
-                                                </button>
-                                            </td>
+                                            {
+                                                statusVenta === true && (
+                                                    <td className='text-center'>
+                                                        <button
+                                                            type="button"
+                                                            className="btn btn-primary"
+                                                            onClick={() => this.agregarProducto(producto.Id_producto, producto.NombreProducto, producto.precio_venta)}
+                                                        >
+                                                            <i className="bi bi-plus-circle"></i>
+
+                                                        </button>
+                                                    </td>
+                                                )
+                                            }
                                         </tr>
                                     ))}
                                 </tbody>
@@ -361,70 +447,91 @@ export class Venta extends Component {
                                     <button
                                         type="button"
                                         className="btn btn-lg btn-dark"
-                                        onClick={() => this.CrearVenta()}
+                                        onClick={() => this.eliminarTodo()}
                                     >
                                         <i className="bi bi-trash3"></i>
                                     </button>
                                 </div>
                             </div>
                         </div>
-                        <div className="row justify-content-start">
-                            <div className="col-2 p-2 ms-4 fs-3">
-                                Venta
-                            </div>
-                            <div className="col-2 ms-4 p-2 fs-4">
-                                <div className=' p-6 fs-5'>{this.state.elnumero}</div>
-                            </div>
-                        </div>
-                        <div className="col-2 ms-4 fs-3">
-                            Detalles:
-                        </div>
-                        <div className="col-12 p-3 fs-4">
-                            <table className='table table-hover '>
-                                <tbody>
-                                    {this.state.detallesVenta.map(detalles => (
-                                        <tr key={detalles.id}>
-                                            <td className='align-items-center fs-5'>{detalles.NombredelProducto}</td>
-                                            <td className='align-items-center fs-5'>{"$"}{detalles.precioProducto}</td>
-                                            <td className='align-items-center fs-5'>{detalles.CantVenta}</td>
-                                            <td className='text-end'>
-                                                <button
-                                                    type="button"
-                                                    className="btn btn-dark me-3"
-                                                    onClick={() => this.decrementarProducto(detalles.Id_producto)}
-                                                >
-                                                    <i className="bi bi-dash-circle"></i>
-                                                </button>
 
-                                                <button
-                                                    type="button"
-                                                    className="btn btn-danger"
-                                                    onClick={() => this.eliminarProducto(detalles.Id_producto)}
-                                                >
-                                                    <i className="bi bi-trash3"></i>
-                                                </button>
-                                            </td>
-
-                                        </tr>
-                                    ))}
-                                </tbody>
-                            </table>
-                            <div className="dropdown col-10 justify-content-center align-items-end">
-                                <button className="btn btn-success dropdown-toggle col-6" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
-                                    {this.state.nombreMetodo || 'Seleccionar Método'}
-                                </button>
-                                <ul className="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                                    {this.state.Metodo_Pago.map((metodo, index) => (
-                                        <li key={index}>
-                                            <a className="dropdown-item" href="#" onClick={() => this.setState({ metodoDePagoSeleccionado: metodo.id_metodo, nombreMetodo: metodo.NombrePago })}>
-                                                {metodo.NombrePago}
-                                            </a>
-                                        </li>//El a es lo que nos da el warning
-                                    ))}
-                                </ul>
+                        {statusVenta === false && (
+                            <div className='d-flex flex-column justify-content-center align-items-center'>
+                                <div className="spinner-border mt-3" role="status">
+                                    <span className="visually-hidden">Loading...</span>
+                                </div>
+                                <div className="mt-3">
+                                    <strong>Esperando Nueva Venta...</strong>
+                                </div>
                             </div>
+                        )}
+                        {
+                            statusVenta === true && (
 
-                        </div>
+                                <div>
+                                    <div className="row justify-content-start">
+                                        <div className="col p-2 ms-4 fs-3">
+                                            Venta:  {numeroVenta}   Empleado: {nombreEmpleado}
+                                        </div>
+                                    </div>
+                                    <div className="col-2 ms-4 fs-3">
+                                        Detalles:
+                                    </div>
+                                    <div className="col-12 p-3 fs-4">
+
+                                        {
+                                            
+                                        }
+                                        <table className='table table-hover '>
+                                            <tbody>
+                                                {this.state.detallesVenta.map(detalles => (
+                                                    <tr key={detalles.id}>
+                                                        <td className='align-items-center fs-5'>{detalles.NombredelProducto}</td>
+                                                        <td className='align-items-center fs-5'>{"$"}{detalles.precioProducto}</td>
+                                                        <td className='align-items-center fs-5'>{detalles.CantVenta}</td>
+                                                        <td className='text-end'>
+                                                            <button
+                                                                type="button"
+                                                                className="btn btn-dark me-3"
+                                                                onClick={() => this.decrementarProducto(detalles.Id_producto)}
+                                                            >
+                                                                <i className="bi bi-dash-circle"></i>
+                                                            </button>
+
+                                                            <button
+                                                                type="button"
+                                                                className="btn btn-danger"
+                                                                onClick={() => this.eliminarProducto(detalles.Id_producto)}
+                                                            >
+                                                                <i className="bi bi-trash3"></i>
+                                                            </button>
+                                                        </td>
+
+                                                    </tr>
+                                                ))}
+                                            </tbody>
+                                            <tfoot>
+                                                <div className="dropdown mg 10" >
+                                                    <button className="btn btn-success dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                                                        {this.state.nombreMetodo || 'Seleccionar Método'}
+                                                    </button>
+                                                    <ul className="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                                                        {this.state.Metodo_Pago.map((metodo, index) => (
+                                                            <li key={index}>
+                                                                <a className="dropdown-item" href="#" onClick={() => (
+                                                                    this.setState({ metodoDePagoSeleccionado: metodo.id_metodo, nombreMetodo: metodo.NombrePago }),
+                                                                    console.log(this.state.metodoDePagoSeleccionado))}>
+                                                                    {metodo.NombrePago}
+                                                                </a>
+                                                            </li>
+                                                        ))}
+                                                    </ul>
+                                                </div>
+                                            </tfoot>
+                                        </table>
+                                    </div>
+                                </div>
+                            )}
                     </div>
                 </div>
                 <div className="container text-center col-5">
@@ -446,7 +553,7 @@ export class Venta extends Component {
                         <Button variant="danger" onClick={this.closeModal}>
                             Cancelar
                         </Button>
-                        <Button variant="primary"  onClick={this.handleClickCargarVenta} >
+                        <Button variant="primary" onClick={this.handleClickCargarVenta} >
                             Guardar
                         </Button>
                     </Modal.Footer>

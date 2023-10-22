@@ -27,15 +27,17 @@ function Menu() {
         if (Decoded.nombreROL === 1) {
             return (
                 <>
-                    <nav className="navbar navbar-expand-lg bg-info fs-5">
-                        <div className="container">
+                    <nav className="navbar nav navbar-expand-lg bg-info fs-5">
+                        <div className="container fluid">
+                            <a class="navbar-brand" href="#">
+                                Heladeria Los Copos</a>
+                            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                                <span class="navbar-toggler-icon"></span>
+                            </button>
                             <div className="collapse navbar-collapse" id="navbarNav">
                                 <ul className="navbar-nav">
-                                    <li className='nav-item'>
-                                        <Link to="/" className='nav-link'> Login</Link>
-                                    </li>
                                     <li className="nav-item">
-                                        <Link to="/Empleados" className='nav-link'> Empleados</Link>
+                                        <Link to="/Empleados" className='nav-link'> Usuarios</Link>
                                     </li>
                                     <li className="nav-item">
                                         <Link to="/Registros" className='nav-link'> Registro Ventas</Link>
@@ -61,12 +63,14 @@ function Menu() {
             return (
                 <>
                     <nav className="navbar navbar-expand-lg bg-info fs-5">
-                        <div className="container">
+                        <div className="container fluid">
+                            <a class="navbar-brand" href="#">
+                                Heladeria Los Copos</a>
+                            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                                <span class="navbar-toggler-icon"></span>
+                            </button>
                             <div className="collapse navbar-collapse" id="navbarNav">
                                 <ul className="navbar-nav">
-                                    <li className="nav-item">
-                                        <li><Link to="/" className='nav-link'> Login</Link></li>
-                                    </li>
                                     <li className="nav-item">
                                         <Link to="/Venta" className='nav-link'> Venta</Link>
                                     </li>
@@ -77,7 +81,7 @@ function Menu() {
                                         <Link to="/Pedidos" className='nav-link'> Pedidos de Stock</Link>
                                     </li>
                                 </ul>
-                                <div className="nav-item ms-3">
+                                <div className="nav-item ms-2">
                                     <button className='btn btn-dark' onClick={() => logout()}>
                                         <i class="bi bi-box-arrow-left"></i>
                                     </button>
