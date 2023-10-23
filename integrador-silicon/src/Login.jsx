@@ -97,7 +97,7 @@ class Login extends Component {
             <div className="container">
                 <div className="row">
                     <div className="col">
-                        <h1>Iniciar Sesión</h1>
+                        <h1><strong>Iniciar Sesión</strong></h1>
                     </div>
                 </div>
 

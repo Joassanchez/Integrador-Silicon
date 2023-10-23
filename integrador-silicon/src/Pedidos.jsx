@@ -19,15 +19,13 @@ class Pedidos extends Component {
       modalEdit: false,
       modal: false,
       idToDelete: null,
-      CantPedido: "",
-      Id_producto: "",
-      Id_proveedor: "",
+      CantPedido: 0,
+      Id_producto: 0,
     };
 
     this.handleClickEditDetalle = this.handleClickEditDetalle.bind(this);
     this.showModalEditDetalle = this.showModalEditDetalle.bind(this);
     this.showModalDeleteDetalle = this.showModalDeleteDetalle.bind(this);
-    this.showModalDeleteDetalle_venta = this.showModalDeleteDetalle_venta.bind(this);
     this.closeModal = this.closeModal.bind(this);
   }
 
@@ -140,20 +138,17 @@ class Pedidos extends Component {
       ).catch(
         (error) => { console.log(error) }
       );
+
+
   }
 
-
-
-  showModalEditDetalle(Id_DetallePedido, CantPedido, Id_producto, Id_proveedor) {
+  showModalEditDetalle(nro_pedido) {
     this.setState({
       modalEdit: true,
-      idToCambiar: Id_DetallePedido,
-      CantPedido,  
-      Id_producto, 
-      Id_proveedor 
+      idToCambiar: nro_pedido,
     });
   }
-  
+
   showModalDeleteDetalle(idDetallePedido) {
     this.setState({
       modal: true,
@@ -161,25 +156,17 @@ class Pedidos extends Component {
     });
   }
 
-  showModalDeleteDetalle_venta(Id_DetallePedido) {
-    this.setState({
-      modalEditDetalle: true,
-      idToEditDetalle: Id_DetallePedido,
-    });
-  }
-
   closeModal() {
     this.setState({
       modal: false,
       modalEdit: false,
-      modalEditDetalle: false,
       idToDelete: null,
       idToCambiar: null,
-      Id_proveedor: '',
     });
   }
 
   handleClickEditDetalle() {
+
     let estadoNum;
     switch (this.state.estado) {
       case 'Aceptado':
@@ -192,23 +179,19 @@ class Pedidos extends Component {
         estadoNum = 1;
     }
 
-    const { CantPedido, Id_producto, Id_proveedor } = this.state;
-
     let parametros = {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
-        'Accept': 'application/json',
+        Accept: 'application/json',
       },
       body: JSON.stringify({
         estado: estadoNum,
-        CantPedido,
-        Id_producto,
-        Id_proveedor,
-      })
+
+      }),
     };
 
-    const url = `http://localhost:8080/Registros/Detalles/${this.state.idToCambiar}`;
+    const url = `http://localhost:8080/pedido/${this.state.idToCambiar}`;
 
     fetch(url, parametros)
       .then((res) => {
@@ -224,27 +207,27 @@ class Pedidos extends Component {
       .then((result) => {
         if (result.ok) {
           toast.success(result.body.message, {
-            position: "bottom-center",
+            position: 'bottom-center',
             autoClose: 5000,
             hideProgressBar: false,
             closeOnClick: true,
             pauseOnHover: true,
             draggable: true,
             progress: undefined,
-            theme: "light",
+            theme: 'light',
           });
           this.closeModal();
-          this.fetchDetallePedidos();
+          this.componentDidMount();
         } else {
           toast.error(result.body.message, {
-            position: "bottom-center",
+            position: 'bottom-center',
             autoClose: 5000,
             hideProgressBar: false,
             closeOnClick: true,
             pauseOnHover: true,
             draggable: true,
             progress: undefined,
-            theme: "light",
+            theme: 'light',
           });
         }
       })
@@ -256,38 +239,35 @@ class Pedidos extends Component {
   handleChange = (event) => {
     this.setState({ [event.target.name]: event.target.value });
   };
+
   traducirEstado = (estado) => {
     switch (estado) {
       case 1:
-        return "En espera";
+        return 'En espera';
       case 2:
-        return "Aceptado";
+        return 'Aceptado';
       case 3:
-        return "Rechazado";
+        return 'Rechazado';
       default:
-        return "Desconocido";
+        return 'Desconocido';
     }
-  }
+  };
+ 
+
   render() {
-    const {
-      Pedidos,
-      Detalle_Pedido,
-      modalEdit,
-      modal,
-
-    } = this.state;
-
     var Decoded = jwt_decode(sessionStorage.getItem('token'));
     const nombreROL = Decoded.nombreROL;
 
     return (
       <div className="container">
         <br />
-        <h1 className=""><strong>Registro de Pedidos</strong></h1>
+        <h1 className="">
+          <strong>Registro de Pedidos</strong>
+        </h1>
         <br />
-        <span>{"   "}</span>
+        <span> </span>
         <div className="accordion" id="accordionExample">
-          {Pedidos.map((Pedido, index) => (
+          {this.state.Pedidos.map((Pedido, index) => (
             <div className="accordion-item" key={index}>
               <h2 className="accordion-header" id={`heading${index}`}>
                 <button
@@ -298,7 +278,7 @@ class Pedidos extends Component {
                   aria-expanded="true"
                   aria-controls={`collapse${index}`}
                 >
-                  <table className='table table-striped '>
+                  <table className="table table-striped ">
                     <thead>
                       <tr>
                         <th className="bg-info">ID DE PEDIDO</th>
@@ -318,7 +298,11 @@ class Pedidos extends Component {
                   </table>
                 </button>
                 {nombreROL === 1 && (
-                  <button type="button" className="btn btn-success" onClick={() => this.showModalEditDetalle(Pedido.nro_pedido)}>
+                  <button
+                    type="button"
+                    className="btn btn-success"
+                    onClick={() => this.showModalEditDetalle(Pedido.nro_pedido)}
+                  >
                     Modificar Estado
                   </button>
                 )}
@@ -330,7 +314,7 @@ class Pedidos extends Component {
                 data-bs-parent="#accordionExample"
               >
                 <div className="accordion-body overflow-auto">
-                  <table className='table table-striped'>
+                  <table className="table table-striped">
                     <thead>
                       <tr>
                         <th>Número de Pedido</th>
@@ -341,7 +325,7 @@ class Pedidos extends Component {
                       </tr>
                     </thead>
                     <tbody>
-                      {Detalle_Pedido
+                      {this.state.Detalle_Pedido
                         .filter((detalle) => detalle.nro_pedido === Pedido.nro_pedido)
                         .map((detalle, detalleIndex) => (
                           <tr key={detalleIndex}>
@@ -351,13 +335,10 @@ class Pedidos extends Component {
                             <td>{detalle.CantPedido}</td>
                             {nombreROL === 1 && (
                               <td>
-                                <button type="button" className="btn btn-primary" onClick={() => this.showModalEditDetalle(Pedido.nro_pedido, detalle.CantPedido, detalle.Id_producto, detalle.Id_proveedor)}>
-                                  Editar
-                                </button>
                                 <button
                                   type="button"
                                   className="btn btn-danger"
-                                  onClick={() => this.showModalDeleteDetalle(detalle.id_detalle_pedido)}
+                                  onClick={() => this.showModalDeleteDetalle(detalle.Id_DetallePedido)}
                                 >
                                   Eliminar
                                 </button>
@@ -373,8 +354,7 @@ class Pedidos extends Component {
           ))}
         </div>
 
-
-        <Modal show={modal} onHide={this.closeModal}>
+        <Modal show={this.state.modal} onHide={this.closeModal}>
           <Modal.Header closeButton>
             <Modal.Title>Confirmación de Eliminación</Modal.Title>
           </Modal.Header>
@@ -389,29 +369,68 @@ class Pedidos extends Component {
           </Modal.Footer>
         </Modal>
 
-        <Modal show={modalEdit} onHide={this.closeModal}>
+        <Modal show={this.state.modalEdit} onHide={this.closeModal}>
           <Modal.Header closeButton>
             <Modal.Title>Modificar Estado del Pedido</Modal.Title>
           </Modal.Header>
           <Modal.Body>
             <Form>
-              <div className="dropdown mg 10">
-                <button className="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
-                  {this.state.estado}
-                </button>
-                <ul className="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                  <li>
-                    <a className="dropdown-item" href="#" onClick={() => this.setState({ estado: 'Aceptado' })}>
-                      Aceptado
-                    </a>
-                  </li>
-                  <li>
-                    <a className="dropdown-item" href="#" onClick={() => this.setState({ estado: 'Rechazado' })}>
-                      Rechazado
-                    </a>
-                  </li>
-                </ul>
-              </div>
+              {this.state.Detalle_Pedido
+                .filter((detalle) => detalle.nro_pedido === this.state.idToCambiar)
+                .map((detalle, index) => (
+                  <div key={index}>
+                    <h4>Pedido</h4>
+                    <table className="table table-striped">
+                      <thead>
+                        <tr>
+                          <th>Número de Pedido</th>
+                          <th>ID Detalle Pedido</th>
+                          <th>Producto</th>
+                          <th>Cantidad</th>
+                          <th>Estado</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr>
+                          <td>{detalle.nro_pedido}</td>
+                          <td>{detalle.Id_DetallePedido}</td>
+                          <td>{detalle.NombreProducto}</td>
+                          <td>{detalle.CantPedido}</td>
+                          <td>
+                            <div className="dropdown mg-10">
+                              <button
+                                className="btn btn-secondary dropdown-toggle"
+                                type="button"
+                                id={`dropdownMenuButton${index}`}
+                                data-bs-toggle="dropdown"
+                                aria-expanded="false"
+                              >
+                                {this.state.estado || 'Seleccionar Estado'}
+                              </button>
+                              <ul className="dropdown-menu" aria-labelledby={`dropdownMenuButton${index}`}>
+                                <li>
+                                  <a className="dropdown-item" href="#" onClick={() => this.setState({ estado: 'Aceptado' })}>
+                                    Aceptado
+                                  </a>
+                                </li>
+                                <li>
+                                  <a className="dropdown-item" href="#" onClick={() => this.setState({ estado: 'Rechazado' })}>
+                                    Rechazado
+                                  </a>
+                                </li>
+                                <li>
+                                  <a className="dropdown-item" href="#" onClick={() => this.setState({ estado: 'En espera' })}>
+                                    En espera
+                                  </a>
+                                </li>
+                              </ul>
+                            </div>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                ))}
             </Form>
           </Modal.Body>
           <Modal.Footer>
@@ -423,8 +442,11 @@ class Pedidos extends Component {
             </Button>
           </Modal.Footer>
         </Modal>
+
+
       </div>
     );
   }
 }
+
 export default Pedidos;

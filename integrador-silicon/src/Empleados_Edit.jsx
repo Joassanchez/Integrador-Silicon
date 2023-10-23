@@ -145,10 +145,13 @@ export class Internal_Vehiculos_Edit extends Component {
         <div className="row">
           <div className="col">
             <h1>
-              {this.props.params.id_usuario
-                ? `Edicion del usuario ${this.props.params.id_usuario}`
-                : 'Nuevo usuario'}
+              <strong>
+                {this.props.params.id_usuario
+                  ? `Edicion del usuario ${this.props.params.id_usuario}`
+                  : 'Nuevo usuario'}
+              </strong>
             </h1>
+
           </div>
         </div>
 

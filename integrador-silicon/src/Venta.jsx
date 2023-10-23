@@ -283,35 +283,47 @@ export class Venta extends Component {
             const url = `http://localhost:8080/Registros/`;
 
             fetch(url, parametros)
-                .then(res => res.json())
-                .then(result => {
-                    // Maneja la respuesta de la solicitud aquí
-                    if (result.ok) {
-                        // Si la solicitud fue exitosa
-                        toast.success(result.body.message, {
-                            position: "bottom-center",
-                            autoClose: 5000,
-                            hideProgressBar: false,
-                            closeOnClick: true,
-                            pauseOnHover: true,
-                            draggable: true,
-                            progress: undefined,
-                            theme: "light",
-                        });
-                    } else {
-                        // Si hay un error en la solicitud
-                        toast.error(result.body.message, {
-                            position: "bottom-center",
-                            autoClose: 5000,
-                            hideProgressBar: false,
-                            closeOnClick: true,
-                            pauseOnHover: true,
-                            draggable: true,
-                            progress: undefined,
-                            theme: "light",
-                        });
-                    }
-                })
+                .then(res => {
+                    return res.json()
+                        .then(body => {
+                            return {
+                                status: res.status,
+                                ok: res.ok,
+                                headers: res.headers,
+                                body: body
+                            };
+
+                        })
+                }).then(
+                    result => {
+
+                        // Maneja la respuesta de la solicitud aquí
+                        if (result.ok) {
+                            // Si la solicitud fue exitosa
+                            toast.success(result.body.message, {
+                                position: "bottom-center",
+                                autoClose: 5000,
+                                hideProgressBar: false,
+                                closeOnClick: true,
+                                pauseOnHover: true,
+                                draggable: true,
+                                progress: undefined,
+                                theme: "light",
+                            });
+                        } else {
+                            // Si hay un error en la solicitud
+                            toast.error(result.body.message, {
+                                position: "bottom-center",
+                                autoClose: 5000,
+                                hideProgressBar: false,
+                                closeOnClick: true,
+                                pauseOnHover: true,
+                                draggable: true,
+                                progress: undefined,
+                                theme: "light",
+                            });
+                        }
+                    })
                 .catch(error => {
                     // Maneja los errores de la solicitud aquí
                     console.error("Error:", error);
@@ -336,21 +348,21 @@ export class Venta extends Component {
                 const url = `http://localhost:8080/Registros/Detalles`;
 
                 fetch(url, parametrosDetalles)
-                    .then(res => res.json())
-                    .then(result => {
-                        // Maneja la respuesta de la solicitud aquí
+                .then(res => {
+                    return res.json()
+                        .then(body => {
+                            return {
+                                status: res.status,
+                                ok: res.ok,
+                                headers: res.headers,
+                                body: body
+                            };
+
+                        })
+                }).then(
+                    result => {
                         if (result.ok) {
                             // Si la solicitud fue exitosa
-                            toast.success(result.body.message, {
-                                position: "bottom-center",
-                                autoClose: 5000,
-                                hideProgressBar: false,
-                                closeOnClick: true,
-                                pauseOnHover: true,
-                                draggable: true,
-                                progress: undefined,
-                                theme: "light",
-                            });
                             this.closeModal();
                             this.componentDidMount();
                         } else {
@@ -480,7 +492,7 @@ export class Venta extends Component {
                                     <div className="col-12 p-3 fs-4">
 
                                         {
-                                            
+
                                         }
                                         <table className='table table-hover '>
                                             <tbody>

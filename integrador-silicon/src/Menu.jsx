@@ -40,13 +40,13 @@ function Menu() {
                                         <Link to="/Empleados" className='nav-link'> Usuarios</Link>
                                     </li>
                                     <li className="nav-item">
+                                        <Link to="/proveedor" className='nav-link'> Proveedores</Link>
+                                    </li>
+                                    <li className="nav-item">
                                         <Link to="/Registros" className='nav-link'> Registro Ventas</Link>
                                     </li>
                                     <li className="nav-item">
                                         <Link to="/pedido" className='nav-link'> Registro Pedido</Link>
-                                    </li>
-                                    <li className="nav-item">
-                                        <Link to="/Venta" className='nav-link'> Venta</Link>
                                     </li>
                                 </ul>
                                 <div className="nav-item ms-3">
