@@ -23,7 +23,9 @@ class Pedidos extends Component {
       Id_producto: 0,
     };
 
+
     this.handleClickEditDetalle = this.handleClickEditDetalle.bind(this);
+    this.handleClickDeleteDetalle = this.handleClickDeleteDetalle.bind(this);
     this.showModalEditDetalle = this.showModalEditDetalle.bind(this);
     this.showModalDeleteDetalle = this.showModalDeleteDetalle.bind(this);
     this.closeModal = this.closeModal.bind(this);
@@ -149,10 +151,10 @@ class Pedidos extends Component {
     });
   }
 
-  showModalDeleteDetalle(idDetallePedido) {
+  showModalDeleteDetalle(Id_DetallePedido) {
     this.setState({
       modal: true,
-      idToDelete: idDetallePedido,
+      idToDelete: Id_DetallePedido,
     });
   }
 
@@ -235,6 +237,60 @@ class Pedidos extends Component {
         console.error('Error:', error);
       });
   }
+  handleClickDeleteDetalle() {
+
+    let parametros = {
+        method: 'DELETE',
+        headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+        }
+    }
+    const url = `http://localhost:8080/Pedidos/Detalles/${this.state.idToDelete}`
+    fetch(url, parametros)
+        .then(res => {
+            return res.json()
+                .then(body => {
+                    return {
+                        status: res.status,
+                        ok: res.ok,
+                        headers: res.headers,
+                        body: body
+                    };
+                })
+        }).then(
+            result => {
+                if (result.ok) {
+                    toast.success(result.body.message, {
+                        position: "bottom-center",
+                        autoClose: 5000,
+                        hideProgressBar: false,
+                        closeOnClick: true,
+                        pauseOnHover: true,
+                        draggable: true,
+                        progress: undefined,
+                        theme: "light",
+                    });
+                    this.closeModal();
+                    this.componentDidMount();
+                } else {
+                    toast.error(result.body.message, {
+                        position: "bottom-center",
+                        autoClose: 5000,
+                        hideProgressBar: false,
+                        closeOnClick: true,
+                        pauseOnHover: true,
+                        draggable: true,
+                        progress: undefined,
+                        theme: "light",
+                    });
+                }
+            }
+        ).catch(
+            (error) => { console.log(error) }
+        );
+}
+
 
   handleChange = (event) => {
     this.setState({ [event.target.name]: event.target.value });
