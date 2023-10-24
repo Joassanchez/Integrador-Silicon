@@ -81,7 +81,7 @@ function Menu() {
                                         <Link to="/Pedidos" className='nav-link'> Pedidos de Stock</Link>
                                     </li>
                                 </ul>
-                                <div className="nav-item ms-2">
+                                <div className="nav-item ms-2 ">
                                     <button className='btn btn-dark' onClick={() => logout()}>
                                         <i class="bi bi-box-arrow-left"></i>
                                     </button>

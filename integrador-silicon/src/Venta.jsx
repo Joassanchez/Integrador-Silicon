@@ -20,9 +20,9 @@ export class Venta extends Component {
             Metodo_Pago: [],
             detalles_Enviar: [],
 
-            CantVenta: '', // Inicializa con 1 o el valor inicial que desees
+            CantVenta: '', 
             NombredelProducto: '',
-            precioProducto: 0, // Inicializa con 0 o el valor inicial que desees
+            precioProducto: 0, 
             metodoDePagoSeleccionado: '',
             modal: false,
             iddelEmpleado: '',
@@ -39,6 +39,7 @@ export class Venta extends Component {
 
     componentDidMount() {
 
+        //Fetch para traer los productos de la BD
         fetch("http://localhost:8080/Registros/Detalles/Productos")
             .then(res => {
                 return res.json()
@@ -74,11 +75,12 @@ export class Venta extends Component {
                 (error) => { console.log(error) }
             );
 
+        //FETCH para seguimiento de las ventas hechas        
         fetch("http://localhost:8080/Registros")
             .then(res => {
                 return res.json()
                     .then(body => {
-                        //console.log(body)
+                        console.log(body)
                         return {
                             status: res.status,
                             ok: res.ok,
@@ -110,6 +112,7 @@ export class Venta extends Component {
                 (error) => { console.log(error) }
             );
 
+        //FETCH para obtener los distintos Metodos de pagos disponibles en la BD
         fetch("http://localhost:8080/Registros/Metodo_Pago")
             .then(res => {
                 return res.json()
@@ -154,17 +157,17 @@ export class Venta extends Component {
     }
 
     closeModal = () => {
+
         this.setState({
             modal: false,
-            metodoDePagoSeleccionado: null,
-            statusVenta: false,
-            detallesVenta: [],
+            statusVenta: false,  
         })
+        this.eliminarTodo()
     }
 
     CrearVenta() {
         const detallesVentaActual = [...this.state.detallesVenta];
-        const numeroVenta = this.state.crearVenta.length > 0 ? this.state.crearVenta[this.state.crearVenta.length - 1].nro_venta + 1 : 1;
+       const numeroVenta = this.state.crearVenta.length > 0 ? this.state.crearVenta[0].nro_venta + 1 : 1;
 
         this.setState({
             detallesVenta: detallesVentaActual,
@@ -175,7 +178,12 @@ export class Venta extends Component {
     }
 
     eliminarTodo() {
-        this.closeModal();
+        this.setState({
+            metodoDePagoSeleccionado: null,
+            nombreMetodo: null,
+            detallesVenta: [],
+            detalles_Enviar: [],
+        })
     }
 
     eliminarProducto(IdProducto) {
@@ -211,7 +219,7 @@ export class Venta extends Component {
         const detalles_Enviar = [...this.state.detalles_Enviar]
         const productoIndex = detallesVentaActual.findIndex(detalle => detalle.Id_producto === Id_Producto);
 
-        const numeroVenta = this.state.crearVenta.length > 0 ? this.state.crearVenta[this.state.crearVenta.length - 1].nro_venta + 1 : 1;
+        const numeroVenta = this.state.crearVenta.length > 0 ? this.state.crearVenta[0].nro_venta + 1 : 1;
 
         let montoTotal = this.state.CantVenta * precio_unitario;
 
@@ -274,7 +282,6 @@ export class Venta extends Component {
                 body: JSON.stringify({
                     id_usuario: idEmpleado,
                     id_metodo: metodoDePagoSeleccionado,
-
                 })
             };
 
@@ -329,25 +336,25 @@ export class Venta extends Component {
                     console.error("Error:", error);
                     // Muestra un mensaje de error
                 });
+        };
+        if (detalles_Enviar) {
 
-            if (detalles_Enviar) {
+            let parametrosDetalles = {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                },
+                body: JSON.stringify({
+                    detalles_Enviar
+                })
+            };
 
-                let parametrosDetalles = {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Accept': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        detalles_Enviar
-                    })
-                };
+            console.log(parametrosDetalles.body)
 
-                console.log(parametrosDetalles.body)
+            const url = `http://localhost:8080/Registros/Detalles`;
 
-                const url = `http://localhost:8080/Registros/Detalles`;
-
-                fetch(url, parametrosDetalles)
+            fetch(url, parametrosDetalles)
                 .then(res => {
                     return res.json()
                         .then(body => {
@@ -357,7 +364,6 @@ export class Venta extends Component {
                                 headers: res.headers,
                                 body: body
                             };
-
                         })
                 }).then(
                     result => {
@@ -379,12 +385,11 @@ export class Venta extends Component {
                             });
                         }
                     })
-                    .catch(error => {
-                        // Maneja los errores de la solicitud aquí
-                        console.error("Error:", error);
-                        // Muestra un mensaje de error
-                    });
-            }
+                .catch(error => {
+                    // Maneja los errores de la solicitud aquí
+                    console.error("Error:", error);
+                    // Muestra un mensaje de error
+                });
         };
     }
 

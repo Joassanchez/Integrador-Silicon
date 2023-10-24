@@ -465,12 +465,6 @@ export class Registros extends Component {
                                             </tbody>
                                         </table>
                                     </button>
-                                    {nombreROL === 1 && (
-                                        <button type="button" className="btn btn-success" onClick={() => this.showModalEditDetalle(venta.nro_venta)}>
-                                            Modificar Método de Pago
-                                        </button>
-                                    )}
-
 
                                 </h2>
                                 <div
@@ -523,6 +517,13 @@ export class Registros extends Component {
                                                         </tr>
                                                     ))}
                                             </tbody>
+                                            <tfoot>
+                                                {nombreROL === 1 && (
+                                                    <button type="button" className="btn btn-success" onClick={() => this.showModalEditDetalle(venta.nro_venta)}>
+                                                        Modificar Método de Pago
+                                                    </button>
+                                                )}
+                                            </tfoot>
                                         </table>
                                     </div>
                                 </div>
