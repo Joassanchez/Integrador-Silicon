@@ -45,9 +45,6 @@ function Menu() {
                                     <li className="nav-item">
                                         <Link to="/Registros" className='nav-link'> Registro Ventas</Link>
                                     </li>
-                                    <li className="nav-item">
-                                        <Link to="/pedido" className='nav-link'> Registro Pedido</Link>
-                                    </li>
                                 </ul>
                                 <div className="nav-item ms-3">
                                     <button className='btn btn-dark' onClick={() => logout()}>
@@ -76,9 +73,6 @@ function Menu() {
                                     </li>
                                     <li className="nav-item">
                                         <Link to="/Registros" className='nav-link'> Registro Ventas</Link>
-                                    </li>
-                                    <li className="nav-item">
-                                        <Link to="/Pedidos" className='nav-link'> Pedidos de Stock</Link>
                                     </li>
                                 </ul>
                                 <div className="nav-item ms-2 ">

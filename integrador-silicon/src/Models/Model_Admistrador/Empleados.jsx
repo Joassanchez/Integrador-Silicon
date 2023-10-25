@@ -154,10 +154,9 @@ export class Empleados extends Component {
           <td>{Empleado.email}</td>
           <td>{Empleado.nombreROL}</td>
           <td>
-            <Link to={`/Empleados/Edit/${Empleado.id_usuario}`} className='btn btn-primary'>
+            <Link to={`/Empleados/Edit/${Empleado.id_usuario}`} className='btn btn-primary me-2'>
               <Pencil />
             </Link>
-
 
             <button className='btn btn-danger' onClick={() => this.showModal(Empleado.id_usuario)}>
               <TrashFill />

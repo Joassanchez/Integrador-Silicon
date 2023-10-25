@@ -153,7 +153,7 @@ export class Proveedor extends Component {
                     <td>{Proveedor.nombre}</td>
                     <td>{Proveedor.especialidad}</td>
                     <td>
-                        <Link to={`/proveedor/Edit/${Proveedor.Id_proveedor}`} className='btn btn-primary'>
+                        <Link to={`/proveedor/Edit/${Proveedor.Id_proveedor}`} className='btn btn-primary me-2'>
                             <Pencil />
                         </Link>
 

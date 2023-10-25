@@ -7,27 +7,27 @@ import Modal from 'react-bootstrap/Modal';
 import jwt_decode from "jwt-decode";
 
 
-export class Venta extends Component {
+export class Carga_Pedidos extends Component {
 
     constructor(props) {
         super(props)
 
         this.state = {
 
+            Pedidos: [],
+            detallePedido: [],
             productos: [],
-            crearVenta: [],
-            detallesVenta: [],
-            Metodo_Pago: [],
+
             detalles_Enviar: [],
 
-            CantVenta: '', 
+            CantPedido: '',
             NombredelProducto: '',
-            precioProducto: 0, 
-            metodoDePagoSeleccionado: '',
+
+
             modal: false,
             iddelEmpleado: '',
 
-            statusVenta: false,
+            statusPedido: false,
 
         }
 
@@ -44,7 +44,7 @@ export class Venta extends Component {
             .then(res => {
                 return res.json()
                     .then(body => {
-                        //console.log(body)
+                        console.log(body)
                         return {
                             status: res.status,
                             ok: res.ok,
@@ -76,7 +76,7 @@ export class Venta extends Component {
             );
 
         //FETCH para seguimiento de las ventas hechas        
-        fetch("http://localhost:8080/Registros")
+        fetch("http://localhost:8080/Pedido")
             .then(res => {
                 return res.json()
                     .then(body => {
@@ -88,11 +88,12 @@ export class Venta extends Component {
                             body: body
                         };
                     })
+
             }).then(
                 result => {
                     if (result.ok) {
                         this.setState({
-                            crearVenta: result.body,
+                            Pedidos: result.body,
                             //siempre que se monta el componente el modal tiene que estar cerrado
                         });
                     } else {
@@ -110,45 +111,11 @@ export class Venta extends Component {
                 }
             ).catch(
                 (error) => { console.log(error) }
+
             );
 
-        //FETCH para obtener los distintos Metodos de pagos disponibles en la BD
-        fetch("http://localhost:8080/Registros/Metodo_Pago")
-            .then(res => {
-                return res.json()
-                    .then(body => {
-                        // console.log(body)
-                        return {
-                            status: res.status,
-                            ok: res.ok,
-                            headers: res.headers,
-                            body: body
-                        };
-                    })
-            }).then(
-                result => {
-                    if (result.ok) {
-                        this.setState({
-                            Metodo_Pago: result.body,
-                        });
-                    } else {
-                        toast.error(result.body.message, {
-                            position: "bottom-center",
-                            autoClose: 5000,
-                            hideProgressBar: false,
-                            closeOnClick: true,
-                            pauseOnHover: true,
-                            draggable: true,
-                            progress: undefined,
-                            theme: "light",
-                        });
-                    }
-                }
-            ).catch(
-                (error) => { console.log(error) }
-            );
+        
     }
-
     showModalConfirmar() {
 
         this.setState({
@@ -160,119 +127,116 @@ export class Venta extends Component {
 
         this.setState({
             modal: false,
-            statusVenta: false,  
+            statusPedido: false,
         })
         this.eliminarTodo()
     }
 
     CrearVenta() {
-        const detallesVentaActual = [...this.state.detallesVenta];
-       const numeroVenta = this.state.crearVenta.length > 0 ? this.state.crearVenta[0].nro_venta + 1 : 1;
+        const detallesPedidoActual = [...this.state.detallePedido];
+        const numeroPedido = this.state.Pedidos.length > 0 ? this.state.Pedidos[0].nro_pedido + 1 : 1;
 
         this.setState({
-            detallesVenta: detallesVentaActual,
-            nuevaVenta: numeroVenta,
-            statusVenta: true,
+            detallePedido: detallesPedidoActual,
+            nuevaPedido: numeroPedido,
+            statusPedido: true,
         });
 
     }
 
     eliminarTodo() {
         this.setState({
-            metodoDePagoSeleccionado: null,
-            nombreMetodo: null,
-            detallesVenta: [],
+            
+            detallePedido: [],
             detalles_Enviar: [],
         })
     }
 
     eliminarProducto(IdProducto) {
-        const detallesVentaActual = [...this.state.detallesVenta];
-        const productoIndex = detallesVentaActual.findIndex(detalle => detalle.Id_producto === IdProducto);
+        const detallesPedidoActual = [...this.state.detallePedido];
+        const productoIndex = detallesPedidoActual.findIndex(detalle => detalle.Id_producto === IdProducto);
 
         if (productoIndex !== -1) {
             // Elimina el producto del array proporcionando el índice y la cantidad de elementos a eliminar (1)
-            detallesVentaActual.splice(productoIndex, 1);
+            detallesPedidoActual.splice(productoIndex, 1);
         }
 
         this.setState({
-            detallesVenta: detallesVentaActual,
+            detallePedido: detallesPedidoActual,
         });
     }
 
     decrementarProducto(IdProducto) {
-        const detallesVentaActual = [...this.state.detallesVenta];
-        const productoIndex = detallesVentaActual.findIndex(detalle => detalle.Id_producto === IdProducto);
+        const detallesPedidoActual = [...this.state.detallePedido];
+        const productoIndex = detallesPedidoActual.findIndex(detalle => detalle.Id_producto === IdProducto);
 
-        if (productoIndex !== -1 && detallesVentaActual[productoIndex].CantVenta > 1) {
-            detallesVentaActual[productoIndex].CantVenta -= 1;
+        if (productoIndex !== -1 && detallesPedidoActual[productoIndex].CantPedido > 1) {
+            detallesPedidoActual[productoIndex].CantPedido -= 1;
 
             this.setState({
-                detallesVenta: detallesVentaActual,
+                detallePedido: detallesPedidoActual,
             });
         }
     }
 
     agregarProducto(Id_Producto, NombreProducto, precio_unitario) {
 
-        const detallesVentaActual = [...this.state.detallesVenta];
+        const detallesPedidoActual = [...this.state.detallePedido];
         const detalles_Enviar = [...this.state.detalles_Enviar]
-        const productoIndex = detallesVentaActual.findIndex(detalle => detalle.Id_producto === Id_Producto);
+        const productoIndex = detallesPedidoActual.findIndex(detalle => detalle.Id_producto === Id_Producto);
 
-        const numeroVenta = this.state.crearVenta.length > 0 ? this.state.crearVenta[0].nro_venta + 1 : 1;
+        const numeroVenta = this.state.Pedidos.length > 0 ? this.state.Pedidos[0].nro_pedido + 1 : 1;
 
         let montoTotal = this.state.CantVenta * precio_unitario;
 
         if (productoIndex !== -1) {
-            detallesVentaActual[productoIndex].CantVenta += 1;
-            detallesVentaActual[productoIndex].monto = detallesVentaActual[productoIndex].CantVenta * precio_unitario;
+            detallesPedidoActual[productoIndex].CantPedido += 1;
+            
         } else {
             // Si el producto no está en detallesVenta, agrégalo con cantidad 1
-            detallesVentaActual.push({
+            detallesPedidoActual.push({
                 Id_producto: Id_Producto,
-                CantVenta: 1,
+                CantPedido: 1,
                 NombredelProducto: NombreProducto,
                 precioProducto: precio_unitario,
-
             });
         }
 
         if (productoIndex !== -1) {
 
-            detalles_Enviar[productoIndex].CantVenta += 1;
+            detalles_Enviar[productoIndex].CantPedido += 1;
 
         } else {
 
             detalles_Enviar.push({
 
-                nro_venta: numeroVenta,
+                nro_pedido: numeroVenta,
                 Id_producto: Id_Producto,
-                CantVenta: 1
+                CantPedido: 1
             })
         }
 
         this.setState({
             Id_producto: Id_Producto,
-            CantVenta: this.state.CantVenta + 1,
+            CantPedido: this.state.CantPedido + 1,
             NombredelProducto: NombreProducto,
             precioProducto: precio_unitario,
 
-            detallesVenta: detallesVentaActual,
+            detallePedido: detallesVentaActual,
             detalles_Enviar: detalles_Enviar
 
         });
     }
 
     handleClickCargarVenta() {
-        console.log(this.state.metodoDePagoSeleccionado);
+        
         var tokenDecoded = jwt_decode(sessionStorage.getItem('token'));
         const idEmpleado = tokenDecoded.usuarioID;
-        let { metodoDePagoSeleccionado } = this.state;
 
         const detalles_Enviar = this.state.detalles_Enviar;
 
         // Verifica que los valores estén presentes y válidos
-        if (metodoDePagoSeleccionado && idEmpleado) {
+        if (idEmpleado) {
             let parametros = {
                 method: 'POST',
                 headers: {
@@ -489,11 +453,11 @@ export class Venta extends Component {
                                 <div>
                                     <div className="row justify-content-around">
                                         <div className="col ms-4 p-2 fs-3">
-                                           <strong>Venta: </strong>  {numeroVenta}
-                                           
+                                            <strong>Venta: </strong>  {numeroVenta}
+
                                         </div>
-                                        <div className="col me-4 p-2 fs-3"> 
-                                        <strong> Empleado:</strong> {nombreEmpleado}
+                                        <div className="col me-4 p-2 fs-3">
+                                            <strong> Empleado:</strong> {nombreEmpleado}
                                         </div>
                                     </div>
                                     <div className="col-2 ms-4 fs-3">
@@ -582,4 +546,5 @@ export class Venta extends Component {
     }
 }
 
-export default Venta
+export default Carga_Pedidos
+

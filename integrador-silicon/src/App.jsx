@@ -1,16 +1,15 @@
 import React from 'react';
 import { Route, Routes, Navigate } from 'react-router-dom';
-import Menu from './Menu';
-import Empleados from './Empleados';
-import Empleados_Edit from './Empleados_Edit';
-import LoginWrapper from './Login';
-import Pedidos from './Pedidos';
-import Registros from './Registros';
-import Proveedor from './Proveedor';
-import Proveedor_Edit from './Proveedor_Edit';
+import Menu from './Models/Menu';
+import Empleados from './Models/Model_Admistrador/Empleados';
+import Empleados_Edit from './Models/Model_Admistrador/Empleados_Edit';
+import LoginWrapper from './Models/Login';
+import Registros from './Models/Model_Empleado/Registros';
+import Proveedor from './Models/Model_Admistrador/Proveedor';
+import Proveedor_Edit from './Models/Model_Admistrador/Proveedor_Edit';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import Venta from './Venta';
+import Venta from './Models/Model_Empleado/Venta';
 
 function App() {
   return (
@@ -26,7 +25,6 @@ function App() {
         <Route path="/proveedor" element={<Proveedor />} />
         <Route path="/proveedor/Edit" element={<Proveedor_Edit />} />
         <Route path="/proveedor/Edit/:Id_proveedor" element={<Proveedor_Edit />} />
-        <Route path='/pedido' element={<Pedidos/>} />
         <Route path="/Registros" element={<Registros/>} />
         <Route path="/login" element={<Navigate to="/" />} />
         <Route path="/Venta" element={<Venta/>} />

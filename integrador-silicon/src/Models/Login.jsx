@@ -94,7 +94,7 @@ class Login extends Component {
 
     render() {
         return (
-            <div className="container">
+            <div className="container ">
                 <div className="row">
                     <div className="col">
                         <h1><strong>Iniciar Sesión</strong></h1>
