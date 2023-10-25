@@ -171,7 +171,7 @@ export class Empleados extends Component {
       <>
         <div className='container'>
           <div>
-          <h1 className="mt-4">
+          <h1 className="col-3 p-2 fs-2 bg-white mt-4">
             <strong>Usuarios</strong>
             <br />
           </h1>

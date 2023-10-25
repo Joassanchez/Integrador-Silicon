@@ -178,9 +178,11 @@ export class Venta extends Component {
     }
 
     eliminarTodo() {
+
         this.setState({
             metodoDePagoSeleccionado: null,
             nombreMetodo: null,
+            statusVenta: false,
             detallesVenta: [],
             detalles_Enviar: [],
         })

@@ -431,7 +431,7 @@ export class Registros extends Component {
             <>
                 <div className="container">
                     <br></br>
-                    <h1 className=""><strong>  Registro de Ventas</strong></h1>
+                    <h1 className="col-3 p-2 fs-2 bg-white mt-4"><strong>  Registro de Ventas</strong></h1>
                     <br></br>
                     <span>{"   "}</span>
                     <div className="accordion" id="accordionExample">

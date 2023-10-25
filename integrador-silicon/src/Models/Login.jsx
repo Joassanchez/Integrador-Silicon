@@ -96,7 +96,7 @@ class Login extends Component {
         return (
             <div className="container ">
                 <div className="row">
-                    <div className="col">
+                    <div className="col-3 p-2 fs-1 bg-white mt-4 ms-3">
                         <h1><strong>Iniciar Sesión</strong></h1>
                     </div>
                 </div>
