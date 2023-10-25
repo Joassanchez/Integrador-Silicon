@@ -194,7 +194,6 @@ export class Registros extends Component {
             modalEdit: true,
             idToEditMetodo: nro_venta,
         })
-        console.log(nro_venta)
     }
 
     showModalDeleteDetalle = (id_detalle_venta) => {
@@ -202,7 +201,6 @@ export class Registros extends Component {
             modal: true,
             idToDelete: id_detalle_venta
         });
-        console.log(id_detalle_venta);
     }
 
     showModalDeleteDetalle_venta = (id_detalle_venta) => {
@@ -211,7 +209,6 @@ export class Registros extends Component {
             idToEditDetalle: id_detalle_venta,
 
         });
-        console.log(id_detalle_venta);
     }
 
     closeModal() {
@@ -242,7 +239,6 @@ export class Registros extends Component {
             body: JSON.stringify({ id_metodo: this.state.metodoDePagoSeleccionado })
         };
 
-        console.log(parametros.body)
 
         const url = `http://localhost:8080/Registros/${this.state.idToEditMetodo}`
 
@@ -364,8 +360,6 @@ export class Registros extends Component {
             })
         };
 
-        console.log(parametros.body)
-
         const url = `http://localhost:8080/Registros/Detalles/${this.state.idToEditDetalle}`
 
         fetch(url, parametros)
@@ -424,8 +418,6 @@ export class Registros extends Component {
 
         var Decoded = jwt_decode(sessionStorage.getItem('token'));
         const nombreROL = Decoded.nombreROL
-
-        console.log(nombreROL)
 
         return (
             <>
