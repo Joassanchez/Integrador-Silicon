@@ -452,7 +452,7 @@ export class Registros extends Component {
                                                     <th className="bg-info">ID DE VENTA</th>
                                                     <th className="bg-info">METODO DE PAGO</th>
                                                     <th className="bg-info">MONTO TOTAL</th>
-                                                    <th className="bg-info">PERSONA</th>
+                                                    <th className="bg-info">USUARIO</th>
                                                 </tr>
                                             </thead>
                                             <tbody>

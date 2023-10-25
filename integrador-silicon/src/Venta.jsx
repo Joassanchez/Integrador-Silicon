@@ -400,12 +400,13 @@ export class Venta extends Component {
         const nombreEmpleado = tokenDecoded.nickname;
         const statusVenta = this.state.statusVenta;
         const numeroVenta = this.state.nuevaVenta;
+        const detallesVentaActual = [...this.state.detallesVenta];
 
         return (
 
             <div className='col-12 mt-2'>
-                <div className='col-5 ms-5 p-2 fs-3'>
-                    Empleado: {nombreEmpleado}
+                <div className='col-2 ms-5 p-2 fs-3 bg-white'>
+                    <strong>Empleado:</strong> {nombreEmpleado}
                 </div>
                 <div className='d-flex justify-content-around'>
                     <div className='col-5 bg-light text-dark mg-2'>
@@ -473,7 +474,7 @@ export class Venta extends Component {
                         </div>
 
                         {statusVenta === false && (
-                            <div className='d-flex flex-column justify-content-center align-items-center'>
+                            <div className='d-flex flex-column justify-self-center align-items-center'>
                                 <div className="spinner-border mt-3" role="status">
                                     <span className="visually-hidden">Loading...</span>
                                 </div>
@@ -486,19 +487,19 @@ export class Venta extends Component {
                             statusVenta === true && (
 
                                 <div>
-                                    <div className="row justify-content-start">
-                                        <div className="col p-2 ms-4 fs-3">
-                                            Venta:  {numeroVenta}   Empleado: {nombreEmpleado}
+                                    <div className="row justify-content-around">
+                                        <div className="col ms-4 p-2 fs-3">
+                                           <strong>Venta: </strong>  {numeroVenta}
+                                           
+                                        </div>
+                                        <div className="col me-4 p-2 fs-3"> 
+                                        <strong> Empleado:</strong> {nombreEmpleado}
                                         </div>
                                     </div>
                                     <div className="col-2 ms-4 fs-3">
                                         Detalles:
                                     </div>
                                     <div className="col-12 p-3 fs-4">
-
-                                        {
-
-                                        }
                                         <table className='table table-hover '>
                                             <tbody>
                                                 {this.state.detallesVenta.map(detalles => (
